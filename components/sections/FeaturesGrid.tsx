@@ -2,6 +2,7 @@
 import { useRef, useState } from 'react';
 import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
 import { FEATURES } from '@/lib/constants';
+import { cn } from '@/lib/utils';
 import { Section } from '@/components/ui/Section';
 import { Home, Train, School, Dumbbell, MousePointer2 } from 'lucide-react';
 
@@ -27,11 +28,12 @@ function FeatureCard({ feature }: { feature: typeof FEATURES[0] }) {
 
     return (
         <div
-            className="group relative border border-white/10 bg-navy-800/50 px-8 py-10 shadow-2xl overflow-hidden rounded-xl"
+            className="group relative border border-white/10 bg-navy-800/80 md:bg-navy-800/50 px-8 py-10 shadow-2xl overflow-hidden rounded-xl"
             onMouseMove={handleMouseMove}
         >
+            {/* Flashlight Gradient - Desktop Only */}
             <motion.div
-                className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100"
+                className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100 hidden md:block"
                 style={{
                     background: useMotionTemplate`
                         radial-gradient(
@@ -42,9 +44,9 @@ function FeatureCard({ feature }: { feature: typeof FEATURES[0] }) {
                     `,
                 }}
             />
-            {/* Spotlight Border */}
+            {/* Spotlight Border - Desktop Only */}
             <motion.div
-                className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100"
+                className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100 hidden md:block"
                 style={{
                     background: useMotionTemplate`
                         radial-gradient(
@@ -60,7 +62,7 @@ function FeatureCard({ feature }: { feature: typeof FEATURES[0] }) {
                 <div className="p-3 bg-white/5 rounded-lg border border-white/10 text-gold-400">
                     <Icon className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold text-white font-serif">{feature.title}</h3>
+                <h3 className={cn("text-xl font-bold font-serif", feature.title.includes("Within 1km") ? "text-gold-400" : "text-white")}>{feature.title}</h3>
                 <p className="text-sm text-slate-300 leading-relaxed">{feature.description}</p>
             </div>
         </div>

@@ -16,7 +16,7 @@ export const LogoMarquee = () => {
                 {[...LOGOS, ...LOGOS].map((logo, i) => (
                     <span
                         key={i}
-                        className="text-xl md:text-2xl font-serif text-white/30 whitespace-nowrap uppercase tracking-widest"
+                        className="text-xl md:text-2xl font-serif text-white whitespace-nowrap uppercase tracking-widest opacity-90"
                     >
                         {logo}
                     </span>

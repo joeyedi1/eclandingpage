@@ -11,6 +11,9 @@ const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfa
 export const metadata: Metadata = {
     title: 'Luxury Executive Condominium | Singapore',
     description: 'Experience the pinnacle of luxury living in Singapore\'s newest EC launch.',
+    icons: {
+        icon: '/favicon.png',
+    },
 }
 
 export default function RootLayout({

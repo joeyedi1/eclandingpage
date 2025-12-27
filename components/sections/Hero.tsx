@@ -12,7 +12,7 @@ const LETTER_ANIMATION = {
 const STAGGER_CHILDREN = {
     animate: {
         transition: {
-            staggerChildren: 0.05
+            staggerChildren: 0.03
         }
     }
 }
@@ -22,7 +22,7 @@ export const Hero = () => {
     const y = useTransform(scrollY, [0, 500], [0, 150]);
 
     // Split text into letters for animation
-    const title = "The Future of Luxury Living";
+    const title = "Aura EC: Nature-Inspired Living";
     const letters = title.split("");
 
     return (
@@ -35,7 +35,7 @@ export const Hero = () => {
                 animate={{ clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)" }}
                 transition={{ duration: 1.5, ease: "circOut" }}
             >
-                <div className="absolute inset-0 bg-navy-900/40 z-10" />
+                <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/90 via-black/60 to-transparent z-10" />
                 <div
                     className="absolute inset-0 bg-cover bg-center"
                     style={{ backgroundImage: `url(${IMAGES.hero})` }}
@@ -43,7 +43,7 @@ export const Hero = () => {
             </motion.div>
 
             {/* Content */}
-            <div className="relative z-20 container mx-auto px-6 flex flex-col items-center text-center">
+            <div className="relative z-20 container mx-auto px-6 flex flex-col items-center text-center pt-32">
 
                 {/* Text Reveal Animation */}
                 <motion.div
@@ -58,7 +58,7 @@ export const Hero = () => {
                                 key={i}
                                 variants={LETTER_ANIMATION}
                                 transition={{ duration: 0.8, ease: [0.6, -0.05, 0.01, 0.99] }}
-                                className="text-4xl md:text-7xl lg:text-8xl font-serif font-bold text-white tracking-tight"
+                                className="text-4xl md:text-7xl lg:text-8xl font-serif font-bold text-white tracking-normal drop-shadow-xl"
                             >
                                 {letter === " " ? "\u00A0" : letter}
                             </motion.span>

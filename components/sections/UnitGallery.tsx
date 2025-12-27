@@ -5,6 +5,7 @@ import { Section } from '@/components/ui/Section';
 import { Button } from '@/components/ui/Button';
 import { UNITS } from '@/lib/constants';
 import { ChevronLeft, ChevronRight, Bed, Maximize } from 'lucide-react';
+import Image from 'next/image';
 
 export const UnitGallery = () => {
     const [activeIndex, setActiveIndex] = useState(0);
@@ -36,28 +37,32 @@ export const UnitGallery = () => {
             </div>
 
             <div className="relative h-[600px] w-full max-w-5xl mx-auto">
-                <AnimatePresence mode="popLayout">
+                <AnimatePresence mode="popLayout" initial={false}>
                     <motion.div
                         key={activeIndex}
-                        initial={{ opacity: 0, x: 100, scale: 0.9, rotate: 5 }}
-                        animate={{ opacity: 1, x: 0, scale: 1, rotate: 0 }}
-                        exit={{ opacity: 0, x: -100, scale: 0.9, rotate: -5 }}
-                        transition={{ duration: 0.6, ease: "circOut" }}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20, zIndex: -1 }}
+                        transition={{ duration: 0.4, ease: "easeOut" }}
                         className="absolute inset-0 z-10"
                     >
                         <div className="h-full w-full bg-navy-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row">
                             <div className="h-1/2 md:h-full md:w-3/5 relative">
-                                <div
-                                    className="absolute inset-0 bg-cover bg-center"
-                                    style={{ backgroundImage: `url(${UNITS[activeIndex].image})` }}
+                                <Image
+                                    src={UNITS[activeIndex].image}
+                                    alt={UNITS[activeIndex].type}
+                                    fill
+                                    className="object-cover"
+                                    sizes="(max-width: 768px) 100vw, 60vw"
+                                    priority
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-navy-900/80 to-transparent md:bg-gradient-to-r" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-navy-900/80 to-transparent md:bg-gradient-to-r z-10" />
                             </div>
 
-                            <div className="h-1/2 md:h-full md:w-2/5 p-8 md:p-12 flex flex-col justify-center space-y-6">
+                            <div className="h-1/2 md:h-full md:w-2/5 p-8 md:p-12 flex flex-col justify-center space-y-6 relative z-20">
                                 <div>
                                     <h3 className="text-3xl font-serif text-white mb-2">{UNITS[activeIndex].type}</h3>
-                                    <p className="text-gold-400 font-medium text-xl">{UNITS[activeIndex].price}</p>
+                                    <p className="text-gold-400 font-medium text-2xl mt-1">{UNITS[activeIndex].price}</p>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4 py-6 border-y border-white/10">
@@ -71,7 +76,7 @@ export const UnitGallery = () => {
                                     </div>
                                 </div>
 
-                                <Button className="w-full">View Floor Plan</Button>
+                                <Button className="w-full bg-gold-500 hover:bg-gold-600 text-navy-900 border-none shadow-lg">View Floor Plan</Button>
                             </div>
                         </div>
                     </motion.div>

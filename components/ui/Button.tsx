@@ -13,7 +13,7 @@ export const Button = ({ className, variant = 'primary', children, ...props }: B
             className={cn(
                 "relative rounded-full px-8 py-3 font-medium transition-all duration-300 transform active:scale-95 text-sm uppercase tracking-wider overflow-hidden group",
                 variant === 'primary' && "bg-white text-navy-900 hover:bg-gray-100",
-                variant === 'outline' && "bg-transparent text-white border border-white/20 hover:bg-white/10",
+                variant === 'outline' && "bg-transparent text-white border border-white/40 md:border-white/20 hover:bg-white/10",
                 className
             )}
             {...props}

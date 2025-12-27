@@ -7,7 +7,7 @@ export const PROJECT_INFO = {
 }
 
 export const IMAGES = {
-    hero: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=2070&auto=format&fit=crop", // Luxury Facade
+    hero: "https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2600&auto=format&fit=crop", // Bright airy facade
     interiorLiving: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=2674&auto=format&fit=crop", // Living Room
     amenities: {
         pool: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=2070&auto=format&fit=crop",
