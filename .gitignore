@@ -27,3 +27,17 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ide
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# typescript
+*.tsbuildinfo
