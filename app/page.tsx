@@ -1,9 +1,9 @@
 import ScrollytellingHero from "@/components/sections/ScrollytellingHero";
+import { LogoMarquee } from "@/components/sections/LogoMarquee";
 import { LoanCalculator } from "@/components/sections/LoanCalculator";
 import { UnitGallery } from "@/components/sections/UnitGallery";
-import { Urgency } from "@/components/sections/Urgency";
+import { AboutTeam } from "@/components/sections/AboutTeam";
 import { LeadForm } from "@/components/sections/LeadForm";
-import { LogoMarquee } from "@/components/sections/LogoMarquee";
 
 export default function Home() {
     return (
@@ -11,9 +11,9 @@ export default function Home() {
             <ScrollytellingHero />
             <LogoMarquee />
             <LoanCalculator />
+            <AboutTeam />
             <UnitGallery />
-            <Urgency />
             <LeadForm />
         </main>
-    )
+    );
 }
