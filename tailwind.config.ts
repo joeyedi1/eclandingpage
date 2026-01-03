@@ -19,6 +19,29 @@ const config: Config = {
                     400: '#d4af37',
                     500: '#c5a028',
                     600: '#b08d1f',
+                },
+                isabelline: {
+                    DEFAULT: '#F4EEEB',
+                    50: '#FBF8F7',
+                    100: '#F4EEEB',
+                    200: '#E6DCD8',
+                },
+                'southern-sand': {
+                    DEFAULT: '#EDE3D6',
+                    200: '#EDE3D6',
+                },
+                taupe: {
+                    DEFAULT: '#B3A696',
+                    400: '#B3A696',
+                },
+                'vintage-coin': {
+                    DEFAULT: '#7A6B5E',
+                    400: '#7A6B5E',
+                },
+                'pine-tree': {
+                    DEFAULT: '#292E1E',
+                    800: '#3A402A',
+                    900: '#292E1E',
                 }
             },
             fontFamily: {

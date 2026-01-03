@@ -5,12 +5,12 @@ import { PROJECT_INFO } from '@/lib/constants';
 
 const CountUnit = ({ label, value }: { label: string, value: number }) => (
     <div className="flex flex-col items-center">
-        <div className="w-20 h-20 md:w-32 md:h-32 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl flex items-center justify-center mb-4 shadow-xl">
-            <span className="text-3xl md:text-5xl font-mono font-bold text-white">
+        <div className="w-20 h-20 md:w-32 md:h-32 bg-white/10 backdrop-blur-md border border-isabelline-50/20 rounded-2xl flex items-center justify-center mb-4 shadow-xl">
+            <span className="text-3xl md:text-5xl font-mono font-bold text-isabelline-100">
                 {value.toString().padStart(2, '0')}
             </span>
         </div>
-        <span className="text-xs uppercase tracking-widest text-gold-400">{label}</span>
+        <span className="text-xs uppercase tracking-widest text-isabelline-50/70">{label}</span>
     </div>
 );
 
@@ -45,13 +45,13 @@ export const Urgency = () => {
 
     return (
         <Section className="py-24 relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-navy-900 via-navy-800 to-black z-0" />
+            <div className="absolute inset-0 bg-gradient-to-br from-vintage-coin-400 to-taupe-400 z-0" />
 
             <div className="relative z-10 flex flex-col items-center text-center">
-                <h2 className="text-3xl md:text-5xl font-serif font-bold text-white mb-6">
+                <h2 className="text-3xl md:text-5xl font-serif font-bold text-isabelline-100 mb-6">
                     VVIP Preview Launches In
                 </h2>
-                <p className="text-xl text-slate-300 mb-12 max-w-2xl">
+                <p className="text-xl text-isabelline-50/90 mb-12 max-w-2xl">
                     {PROJECT_INFO.vipDiscount}
                 </p>
 
@@ -62,8 +62,8 @@ export const Urgency = () => {
                     <CountUnit label="Seconds" value={timeLeft.seconds} />
                 </div>
 
-                <div className="p-4 bg-gold-400/10 border border-gold-400/20 rounded-lg">
-                    <p className="text-gold-400 font-medium">Limited Slots Available. Direct Developer Prices.</p>
+                <div className="p-4 bg-white/10 border border-isabelline-50/20 rounded-lg">
+                    <p className="text-isabelline-50 font-medium">Limited Slots Available. Direct Developer Prices.</p>
                 </div>
             </div>
         </Section>

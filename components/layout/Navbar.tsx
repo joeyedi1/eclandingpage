@@ -23,13 +23,13 @@ export const Navbar = () => {
             transition={{ duration: 0.8, ease: "circOut" }}
             className={cn(
                 "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent",
-                scrolled ? "glass-dark py-4 border-white/10" : "bg-transparent py-6"
+                scrolled ? "bg-isabelline-50/90 backdrop-blur-md py-4 border-pine-tree-900/10 shadow-sm" : "bg-transparent py-6"
             )}
         >
             <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
                 {/* Logo */}
-                <Link href="/" className="text-2xl font-serif font-bold text-white tracking-tighter">
-                    AURA <span className="text-gold-400">EC</span>
+                <Link href="/" className="text-2xl font-serif font-bold text-pine-tree-900 tracking-tighter">
+                    AURA <span className="text-vintage-coin-400">EC</span>
                 </Link>
 
                 {/* Desktop Links */}
@@ -38,17 +38,17 @@ export const Navbar = () => {
                         <Link
                             key={link.name}
                             href={link.href}
-                            className="text-sm font-medium text-white/80 hover:text-gold-400 transition-colors uppercase tracking-widest"
+                            className="text-sm font-medium text-pine-tree-800 hover:text-vintage-coin-400 transition-colors uppercase tracking-widest"
                         >
                             {link.name}
                         </Link>
                     ))}
-                    <Button variant="primary">Book VVIP Preview</Button>
+                    <Button className="bg-pine-tree-900 text-isabelline-100 hover:bg-pine-tree-800">Book VVIP Preview</Button>
                 </div>
 
                 {/* Mobile Menu Toggle */}
                 <button
-                    className="md:hidden text-white"
+                    className="md:hidden text-pine-tree-900"
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 >
                     {mobileMenuOpen ? <X /> : <Menu />}
@@ -61,19 +61,19 @@ export const Navbar = () => {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="md:hidden glass-dark border-t border-white/10 absolute w-full top-full left-0 flex flex-col p-6 gap-4"
+                    className="md:hidden bg-isabelline-50 border-t border-pine-tree-900/10 absolute w-full top-full left-0 flex flex-col p-6 gap-4 shadow-xl"
                 >
                     {NAV_LINKS.map((link) => (
                         <Link
                             key={link.name}
                             href={link.href}
                             onClick={() => setMobileMenuOpen(false)}
-                            className="text-lg font-serif text-white hover:text-gold-400"
+                            className="text-lg font-serif text-pine-tree-900 hover:text-vintage-coin-400"
                         >
                             {link.name}
                         </Link>
                     ))}
-                    <Button className="w-full">Book VVIP Preview</Button>
+                    <Button className="w-full bg-pine-tree-900 text-isabelline-100">Book VVIP Preview</Button>
                 </motion.div>
             )}
         </motion.nav>
