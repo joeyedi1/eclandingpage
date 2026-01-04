@@ -13,30 +13,141 @@ function BuildingModel() {
     useFrame((state, delta) => {
         if (!meshRef.current) return;
 
-        // SCROLL ANIMATION LOGIC
-        // scroll.offset is between 0 and 1
+        // SCROLL ANIMATION LOGIC: "Construction" Effect
+        // The building starts flat (scale 0) and grows up (scale 1) as you scroll.
 
-        // Rotate the model based on scroll
-        // One full rotation over the entire scroll distance
-        meshRef.current.rotation.y = scroll.offset * Math.PI * 2;
+        // 1. Growth Animation (Scale Y)
+        // We clamp it slightly so it doesn't disappear completely at the very top (min 0.01)
+        const growth = Math.max(0.01, scroll.offset);
+        meshRef.current.scale.y = growth;
+        meshRef.current.scale.x = 1;
+        meshRef.current.scale.z = 1;
 
-        // Slight tilt on X axis
-        meshRef.current.rotation.x = scroll.offset * Math.PI * 0.1;
-
-        // Move gently up/down
-        meshRef.current.position.y = -1 + Math.sin(scroll.offset * Math.PI) * 0.5;
+        // 2. Gentle Rotation (Constant, not scroll-linked)
+        // Gives 3D depth without dizziness
+        meshRef.current.rotation.y += delta * 0.05; // Slower rotation
     });
 
-    return (
-        <group ref={meshRef}>
-            <mesh position={[0, 0, 0]}>
-                <boxGeometry args={[2.5, 3.5, 2.5]} />
-                <meshStandardMaterial color="#B3A696" roughness={0.2} metalness={0.8} />
+    // Helper for repeating floor slabs to create "detail" texture
+    const floors = Array.from({ length: 8 });
+    const tallerFloors = Array.from({ length: 10 });
+
+    // Procedural Mullions (Window Frames)
+    const Mullions = ({ height, width, count = 3 }: { height: number, width: number, count?: number }) => (
+        <group>
+            {Array.from({ length: count }).map((_, i) => {
+                const x = (i - (count - 1) / 2) * (width / count);
+                return (
+                    <group key={i} position={[x, height / 2, 0]}>
+                        {/* Front Face */}
+                        <mesh position={[0, 0, width / 2]}>
+                            <boxGeometry args={[0.05, height, 0.05]} />
+                            <meshStandardMaterial color="#5A4B3E" />
+                        </mesh>
+                        {/* Back Face */}
+                        <mesh position={[0, 0, -width / 2]}>
+                            <boxGeometry args={[0.05, height, 0.05]} />
+                            <meshStandardMaterial color="#5A4B3E" />
+                        </mesh>
+                    </group>
+                )
+            })}
+            {/* Side Mullions */}
+            <mesh position={[width / 2, height / 2, 0]}>
+                <boxGeometry args={[0.05, height, width]} />
+                <meshStandardMaterial color="#5A4B3E" />
             </mesh>
-            {/* Decorative elements to show rotation better */}
-            <mesh position={[1.5, -1, 1.5]}>
-                <sphereGeometry args={[0.5]} />
-                <meshStandardMaterial color="#7A6B5E" roughness={0.1} />
+            <mesh position={[-width / 2, height / 2, 0]}>
+                <boxGeometry args={[0.05, height, width]} />
+                <meshStandardMaterial color="#5A4B3E" />
+            </mesh>
+        </group>
+    );
+
+    return (
+        <group ref={meshRef} position={[0, -2.5, 0]}>
+            {/* --- LEFT TOWER --- */}
+            <group position={[-1.2, 0, 0]}>
+                {/* Core Glass reflecting 'units' */}
+                <mesh position={[0, 2, 0]}>
+                    <boxGeometry args={[1.4, 4, 1.4]} />
+                    <meshStandardMaterial color="#A6B3C3" metalness={0.9} roughness={0.05} padding={0} />
+                </mesh>
+
+                {/* Window Mullions Grid */}
+                <Mullions height={4} width={1.5} count={4} />
+
+                {/* Floor Slabs / Balconies */}
+                {floors.map((_, i) => (
+                    <group key={`l-${i}`} position={[0, i * 0.5 + 0.25, 0]}>
+                        {/* Slab */}
+                        <mesh>
+                            <boxGeometry args={[1.6, 0.08, 1.6]} />
+                            <meshStandardMaterial color="#EDE3D6" />
+                        </mesh>
+                        {/* Glass Railing Hint */}
+                        <mesh position={[0, 0.1, 0]}>
+                            <boxGeometry args={[1.55, 0.1, 1.55]} />
+                            <meshStandardMaterial color="#7A6B5E" transparent opacity={0.3} />
+                        </mesh>
+                    </group>
+                ))}
+
+                {/* Roof Garden */}
+                <mesh position={[0, 4.1, 0]}>
+                    <boxGeometry args={[1.4, 0.4, 1.4]} />
+                    <meshStandardMaterial color="#4A5D4F" />
+                </mesh>
+            </group>
+
+            {/* --- RIGHT TOWER (Taller) --- */}
+            <group position={[1.2, 0, 0]}>
+                {/* Core Glass */}
+                <mesh position={[0, 2.5, 0]}>
+                    <boxGeometry args={[1.4, 5, 1.4]} />
+                    <meshStandardMaterial color="#A6B3C3" metalness={0.9} roughness={0.05} />
+                </mesh>
+
+                {/* Window Mullions Grid */}
+                <Mullions height={5} width={1.5} count={4} />
+
+                {/* Floor Slabs */}
+                {tallerFloors.map((_, i) => (
+                    <group key={`r-${i}`} position={[0, i * 0.5 + 0.25, 0]}>
+                        <mesh>
+                            <boxGeometry args={[1.6, 0.08, 1.6]} />
+                            <meshStandardMaterial color="#EDE3D6" />
+                        </mesh>
+                        <mesh position={[0, 0.1, 0]}>
+                            <boxGeometry args={[1.55, 0.1, 1.55]} />
+                            <meshStandardMaterial color="#7A6B5E" transparent opacity={0.3} />
+                        </mesh>
+                    </group>
+                ))}
+                {/* Roof Garden */}
+                <mesh position={[0, 5.1, 0]}>
+                    <boxGeometry args={[1.4, 0.6, 1.4]} />
+                    <meshStandardMaterial color="#4A5D4F" />
+                </mesh>
+            </group>
+
+            {/* --- SKY BRIDGE --- */}
+            <group position={[0, 3, 0]}>
+                <mesh>
+                    <boxGeometry args={[2, 0.2, 1]} />
+                    <meshStandardMaterial color="#7A6B5E" metalness={0.5} />
+                </mesh>
+                {/* Bridge Glass Railing */}
+                <mesh position={[0, 0.2, 0]}>
+                    <boxGeometry args={[2, 0.2, 0.9]} />
+                    <meshStandardMaterial color="#A6B3C3" transparent opacity={0.4} />
+                </mesh>
+            </group>
+
+            {/* --- PODIUM BASE --- */}
+            <mesh position={[0, 0, 0]}>
+                <boxGeometry args={[5, 0.5, 4]} />
+                <meshStandardMaterial color="#7A6B5E" roughness={0.5} />
             </mesh>
         </group>
     );
