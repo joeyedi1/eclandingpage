@@ -71,7 +71,7 @@ function BuildingModel() {
                 {/* Core Glass reflecting 'units' */}
                 <mesh position={[0, 2, 0]}>
                     <boxGeometry args={[1.4, 4, 1.4]} />
-                    <meshStandardMaterial color="#A6B3C3" metalness={0.9} roughness={0.05} padding={0} />
+                    <meshStandardMaterial color="#A6B3C3" metalness={0.9} roughness={0.05} />
                 </mesh>
 
                 {/* Window Mullions Grid */}
