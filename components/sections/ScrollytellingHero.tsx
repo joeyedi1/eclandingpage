@@ -65,7 +65,7 @@ function BuildingModel() {
     );
 
     return (
-        <group ref={meshRef} position={[0, -2.5, 0]}>
+        <group ref={meshRef} position={[0, -2.5, 0]} scale={[0.85, 0.85, 0.85]}>
             {/* --- LEFT TOWER --- */}
             <group position={[-1.2, 0, 0]}>
                 {/* Core Glass reflecting 'units' */}
@@ -154,9 +154,30 @@ function BuildingModel() {
 }
 
 export default function ScrollytellingHero() {
+    // Adjust camera based on screen width
+    function ResponsiveCameraRig() {
+        const { camera, size } = useThree();
+
+        // Simple logic: if aspect ratio is portrait (mobile), move camera back
+        const isMobile = size.width < 768; // standard md breakpoint
+
+        useFrame(() => {
+            // Smoothly interpolate camera position
+            const targetZ = isMobile ? 22 : 15;
+            const targetY = isMobile ? 0.5 : 1; // Look a bit lower on mobile
+
+            camera.position.z += (targetZ - camera.position.z) * 0.05;
+            camera.position.y += (targetY - camera.position.y) * 0.05;
+            camera.updateProjectionMatrix();
+        });
+
+        return null;
+    }
+
     return (
         <div className="h-screen w-full relative bg-southern-sand-200 [&_*::-webkit-scrollbar]:hidden [&_*]:[scrollbar-width:none] [&_*]:[-ms-overflow-style:none]">
-            <Canvas shadows camera={{ position: [0, 0, 8], fov: 40 }}>
+            <Canvas shadows camera={{ position: [0, 1, 15], fov: 30 }}>
+                <ResponsiveCameraRig />
                 <ambientLight intensity={0.5} />
                 <directionalLight
                     position={[5, 10, 5]}
@@ -175,28 +196,28 @@ export default function ScrollytellingHero() {
                     <Scroll html style={{ width: '100%' }}>
 
                         {/* Page 1: Intro */}
-                        <section className="h-screen flex items-center justify-start px-20 text-vintage-coin-400 pointer-events-none relative z-50">
+                        <section className="h-screen flex items-center justify-start px-6 md:px-20 text-vintage-coin-400 pointer-events-none relative z-50">
                             <div className="max-w-xl">
                                 <motion.h1
                                     initial={{ opacity: 0, y: 20 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ duration: 0.8 }}
-                                    className="text-7xl font-light tracking-tighter mb-6"
+                                    className="text-5xl md:text-7xl font-light tracking-tighter mb-6"
                                 >
                                     The <span className="font-serif italic text-taupe-400">Vision</span>
                                 </motion.h1>
-                                <p className="text-xl text-vintage-coin-400/90">
+                                <p className="text-lg md:text-xl text-vintage-coin-400/90">
                                     A sanctuary in the sky. Experience luxury defined by nature and architectural elegance.
                                 </p>
                             </div>
                         </section>
 
                         {/* Page 2: Feature 1 */}
-                        <section className="h-screen flex items-center justify-end px-20 text-vintage-coin-400 pointer-events-none">
+                        <section className="h-screen flex items-center justify-end px-6 md:px-20 text-vintage-coin-400 pointer-events-none">
                             <div className="max-w-xl text-right">
-                                <h2 className="text-5xl font-light mb-4 text-vintage-coin-400">Timeless Design</h2>
-                                <p className="text-lg text-vintage-coin-400/80">
+                                <h2 className="text-4xl md:text-5xl font-light mb-4 text-vintage-coin-400">Timeless Design</h2>
+                                <p className="text-base md:text-lg text-vintage-coin-400/80">
                                     Crafted with precision. Every angle tells a story of modern sophistication.
                                 </p>
                             </div>
@@ -204,9 +225,9 @@ export default function ScrollytellingHero() {
 
                         {/* Page 3: Feature 2 */}
                         <section className="h-screen flex items-center justify-center text-center px-4 text-vintage-coin-400 pointer-events-none">
-                            <div className="max-w-2xl bg-white/40 backdrop-blur-md p-12 rounded-2xl border border-vintage-coin-400/10 shadow-lg">
-                                <h2 className="text-5xl font-light mb-4 text-vintage-coin-400">360° Living</h2>
-                                <p className="text-lg text-vintage-coin-400/80">
+                            <div className="max-w-2xl bg-white/40 backdrop-blur-md p-8 md:p-12 rounded-2xl border border-vintage-coin-400/10 shadow-lg">
+                                <h2 className="text-4xl md:text-5xl font-light mb-4 text-vintage-coin-400">360° Living</h2>
+                                <p className="text-base md:text-lg text-vintage-coin-400/80">
                                     Panoramic views that take your breath away. Seamless indoor-outdoor living.
                                 </p>
                             </div>
@@ -214,7 +235,7 @@ export default function ScrollytellingHero() {
 
                         {/* Page 4: Call to Action (Transition out) */}
                         <section className="h-screen flex flex-col items-center justify-center text-vintage-coin-400 pointer-events-auto">
-                            <h2 className="text-4xl mb-8 font-serif">Ready to explore?</h2>
+                            <h2 className="text-3xl md:text-4xl mb-8 font-serif">Ready to explore?</h2>
                         </section>
 
                     </Scroll>
@@ -223,7 +244,7 @@ export default function ScrollytellingHero() {
 
             {/* Scroll indicator */}
             <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-vintage-coin-400/30 animate-bounce">
-                <p className="text-sm uppercase tracking-[0.3em]">Scroll to Explore</p>
+                <p className="text-xs md:text-sm uppercase tracking-[0.3em] whitespace-nowrap">Scroll to Explore</p>
             </div>
         </div>
     );
