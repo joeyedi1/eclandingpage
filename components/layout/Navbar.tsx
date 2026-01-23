@@ -3,34 +3,71 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { NAV_LINKS, PROJECT_INFO } from '@/lib/constants';
+import { NAV_LINKS } from '@/lib/constants';
 import { Button } from '@/components/ui/Button';
 import { Menu, X } from 'lucide-react';
 
 export const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [isPageLoaded, setIsPageLoaded] = useState(false);
     const { scrollY } = useScroll();
 
     useMotionValueEvent(scrollY, "change", (latest) => {
         setScrolled(latest > 50);
     });
 
+    // Listen for page loaded event from ScrollytellingHero
+    useEffect(() => {
+        const handlePageLoaded = () => setIsPageLoaded(true);
+        const handlePageReset = () => setIsPageLoaded(false);
+        
+        window.addEventListener('pageFullyLoaded', handlePageLoaded);
+        window.addEventListener('resetScrollytelling', handlePageReset);
+        
+        return () => {
+            window.removeEventListener('pageFullyLoaded', handlePageLoaded);
+            window.removeEventListener('resetScrollytelling', handlePageReset);
+        };
+    }, []);
+
+    const scrollToTop = (e: React.MouseEvent) => {
+        e.preventDefault();
+        
+        // First scroll window to top smoothly
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+
+        // After a short delay, dispatch event to reset the scrollytelling
+        setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('resetScrollytelling'));
+        }, 300);
+    };
+
     return (
         <motion.nav
-            initial={{ y: -100 }}
-            animate={{ y: 0 }}
-            transition={{ duration: 0.8, ease: "circOut" }}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ 
+                opacity: isPageLoaded ? 1 : 0, 
+                y: isPageLoaded ? 0 : -20 
+            }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             className={cn(
                 "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent",
                 scrolled ? "bg-isabelline-50/90 backdrop-blur-md py-4 border-pine-tree-900/10 shadow-sm" : "bg-transparent py-6"
             )}
         >
             <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
-                {/* Logo */}
-                <Link href="/" className="text-2xl font-serif font-bold text-pine-tree-900 tracking-tighter">
+                {/* Logo - Smooth scroll to top */}
+                <a 
+                    href="/"
+                    onClick={scrollToTop}
+                    className="text-2xl font-serif font-bold text-pine-tree-900 tracking-tighter cursor-pointer"
+                >
                     AURA <span className="text-vintage-coin-400">EC</span>
-                </Link>
+                </a>
 
                 {/* Desktop Links */}
                 <div className="hidden md:flex items-center gap-8">
