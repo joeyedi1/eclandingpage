@@ -69,7 +69,7 @@ function BuildingModel() {
 
         // Building grows as user scrolls (0 to 1)
         const growth = Math.max(0.01, scroll.offset);
-        meshRef.current.scale.y = growth;
+        meshRef.current.scale.y = growth * 0.8;
         meshRef.current.scale.x = 1;
         meshRef.current.scale.z = 1;
 
@@ -109,7 +109,7 @@ function BuildingModel() {
     );
 
     return (
-        <group ref={meshRef} position={[0, -2.5, 0]} scale={[0.85, 0.85, 0.85]}>
+        <group ref={meshRef} position={[0, -2.5, 0]} scale={[0.85, 0.6, 0.85]}>
             {/* LEFT TOWER */}
             <group position={[-1.2, 0, 0]}>
                 <mesh position={[0, 2, 0]}>
