@@ -109,7 +109,7 @@ function BuildingModel() {
     );
 
     return (
-        <group ref={meshRef} position={[0, -2.5, 0]} scale={[0.85, 0.6, 0.85]}>
+        <group ref={meshRef} position={[0, -2.5, 0]} scale={[0.85, 0.7, 0.85]}>
             {/* LEFT TOWER */}
             <group position={[-1.2, 0, 0]}>
                 <mesh position={[0, 2, 0]}>
@@ -447,7 +447,7 @@ function PriceInputSection({ purchasePrice, setPurchasePrice }: { purchasePrice:
         <div className="absolute top-20 md:top-24 left-0 right-0 z-[45] pointer-events-auto">
             <div className="max-w-7xl mx-auto px-4 md:px-20">
                 <div className="text-center text-vintage-coin-400/70">
-                    <p className="text-xs md:text-base mb-1 md:mb-2">How much do you need for a</p>
+                    <p className="text-sm md:text-base mb-1 md:mb-2">How much do you need for a</p>
                     <div className="inline-flex items-baseline justify-center">
                         <span className="text-3xl md:text-6xl font-bold text-vintage-coin-400 font-mono">$</span>
                         <div className="relative">
@@ -466,7 +466,7 @@ function PriceInputSection({ purchasePrice, setPurchasePrice }: { purchasePrice:
                             <Pencil className="absolute -right-5 md:-right-7 top-1/2 -translate-y-1/2 w-3 h-3 md:w-5 md:h-5 text-vintage-coin-400/40" />
                         </div>
                     </div>
-                    <p className="text-xs md:text-base mt-1 md:mt-2">Property</p>
+                    <p className="text-sm md:text-base mt-1 md:mt-2">Property</p>
                     
                     {/* Apply Button - shows when there are changes */}
                     <AnimatePresence>
@@ -484,7 +484,7 @@ function PriceInputSection({ purchasePrice, setPurchasePrice }: { purchasePrice:
                     </AnimatePresence>
                     
                     {/* Hint text */}
-                    <p className="text-[10px] md:text-xs text-vintage-coin-400/40 mt-1 md:mt-2">
+                    <p className="text-[10px] md:text-xs text-vintage-coin-400/50 mt-1 md:mt-2">
                         {hasChanges ? "Press Enter or click Apply" : "Click to edit price"}
                     </p>
                 </div>
@@ -503,7 +503,7 @@ function ResponsiveCameraRig() {
     useFrame(() => {
         // Mobile: zoom out and position camera to center building between price input and stage card
         const targetZ = isMobile ? 23 : 15;
-        const targetY = isMobile ? 1 : 1;
+        const targetY = isMobile ? 0.5 : 1;
 
         camera.position.z += (targetZ - camera.position.z) * 0.05;
         camera.position.y += (targetY - camera.position.y) * 0.05;
