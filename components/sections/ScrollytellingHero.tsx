@@ -69,7 +69,7 @@ function BuildingModel() {
 
         // Building grows as user scrolls (0 to 1)
         const growth = Math.max(0.01, scroll.offset);
-        meshRef.current.scale.y = growth;
+        meshRef.current.scale.y = growth * 0.8;
         meshRef.current.scale.x = 1;
         meshRef.current.scale.z = 1;
 
@@ -502,7 +502,7 @@ function ResponsiveCameraRig() {
 
     useFrame(() => {
         // Mobile: position building to fill space between price input and stage card
-        const targetZ = isMobile ? 20 : 15;
+        const targetZ = isMobile ? 23 : 15;
         const targetY = isMobile ? 0.5 : 1;
 
         camera.position.z += (targetZ - camera.position.z) * 0.05;
