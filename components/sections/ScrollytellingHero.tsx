@@ -69,7 +69,7 @@ function BuildingModel() {
 
         // Building grows as user scrolls (0 to 1)
         const growth = Math.max(0.01, scroll.offset);
-        meshRef.current.scale.y = growth * 0.8;
+        meshRef.current.scale.y = growth;
         meshRef.current.scale.x = 1;
         meshRef.current.scale.z = 1;
 
@@ -109,7 +109,7 @@ function BuildingModel() {
     );
 
     return (
-        <group ref={meshRef} position={[0, -2.5, 0]} scale={[0.85, 0.7, 0.85]}>
+        <group ref={meshRef} position={[0, -2.5, 0]} scale={[0.85, 0.85, 0.85]}>
             {/* LEFT TOWER */}
             <group position={[-1.2, 0, 0]}>
                 <mesh position={[0, 2, 0]}>
@@ -371,12 +371,12 @@ function PriceInputSection({ purchasePrice, setPurchasePrice }: { purchasePrice:
         const length = value.length;
         // Use desktop width initially to prevent layout shift, then adjust
         if (!mounted) {
-            return Math.max(160, length * 36 + 10);
+            return Math.max(180, length * 42 + 10);
         }
         if (isMobile) {
-            return Math.max(100, length * 20 + 10);
+            return Math.max(120, length * 24 + 10);
         }
-        return Math.max(160, length * 36 + 10);
+        return Math.max(180, length * 42 + 10);
     };
 
     // Format number with commas
@@ -444,12 +444,12 @@ function PriceInputSection({ purchasePrice, setPurchasePrice }: { purchasePrice:
     }, [purchasePrice]);
 
     return (
-        <div className="absolute top-20 md:top-24 left-0 right-0 z-[45] pointer-events-auto">
+        <div className="absolute top-20 md:top-24 left-0 right-0 z-[45] pointer-events-none">
             <div className="max-w-7xl mx-auto px-4 md:px-20">
-                <div className="text-center text-vintage-coin-400/70">
-                    <p className="text-sm md:text-base mb-1 md:mb-2">How much do you need for a</p>
-                    <div className="inline-flex items-baseline justify-center">
-                        <span className="text-3xl md:text-6xl font-bold text-vintage-coin-400 font-mono">$</span>
+                <div className="text-center text-vintage-coin-400">
+                    <p className="text-sm md:text-lg font-medium mb-1 md:mb-2">How much do you need for a</p>
+                    <div className="inline-flex items-baseline justify-center pointer-events-auto">
+                        <span className="text-4xl md:text-7xl font-extrabold text-vintage-coin-400 font-mono">$</span>
                         <div className="relative">
                             <input
                                 ref={inputRef}
@@ -460,13 +460,13 @@ function PriceInputSection({ purchasePrice, setPurchasePrice }: { purchasePrice:
                                 onFocus={handleFocus}
                                 onKeyDown={handleKeyDown}
                                 style={{ width: `${getInputWidth(inputValue)}px` }}
-                                className="text-3xl md:text-6xl font-bold text-vintage-coin-400 bg-transparent border-b-2 border-dashed border-vintage-coin-400/40 hover:border-vintage-coin-400 focus:border-vintage-coin-400 focus:border-solid outline-none text-left font-mono transition-all cursor-text"
+                                className="text-4xl md:text-7xl font-extrabold text-vintage-coin-400 bg-transparent border-b-2 border-dashed border-vintage-coin-400/40 hover:border-vintage-coin-400 focus:border-vintage-coin-400 focus:border-solid outline-none text-left font-mono transition-all cursor-text"
                                 placeholder="1,500,000"
                             />
-                            <Pencil className="absolute -right-5 md:-right-7 top-1/2 -translate-y-1/2 w-3 h-3 md:w-5 md:h-5 text-vintage-coin-400/40" />
+                            <Pencil className="absolute -right-6 md:-right-8 top-1/2 -translate-y-1/2 w-4 h-4 md:w-6 md:h-6 text-vintage-coin-400/50" />
                         </div>
                     </div>
-                    <p className="text-sm md:text-base mt-1 md:mt-2">Property</p>
+                    <p className="text-sm md:text-lg font-medium mt-1 md:mt-2">Property</p>
                     
                     {/* Apply Button - shows when there are changes */}
                     <AnimatePresence>
@@ -476,7 +476,7 @@ function PriceInputSection({ purchasePrice, setPurchasePrice }: { purchasePrice:
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}
                                 onClick={applyChanges}
-                                className="mt-3 md:mt-4 px-4 md:px-6 py-1.5 md:py-2 bg-vintage-coin-400 text-white rounded-full text-xs md:text-sm font-medium hover:bg-taupe-400 transition-colors shadow-lg"
+                                className="mt-3 md:mt-4 px-4 md:px-6 py-1.5 md:py-2 bg-vintage-coin-400 text-white rounded-full text-xs md:text-sm font-medium hover:bg-taupe-400 transition-colors shadow-lg pointer-events-auto"
                             >
                                 Apply Price
                             </motion.button>
@@ -484,7 +484,7 @@ function PriceInputSection({ purchasePrice, setPurchasePrice }: { purchasePrice:
                     </AnimatePresence>
                     
                     {/* Hint text */}
-                    <p className="text-[10px] md:text-xs text-vintage-coin-400/50 mt-1 md:mt-2">
+                    <p className="text-[10px] md:text-xs text-vintage-coin-400/60 mt-1 md:mt-2">
                         {hasChanges ? "Press Enter or click Apply" : "Click to edit price"}
                     </p>
                 </div>
@@ -501,9 +501,9 @@ function ResponsiveCameraRig() {
     const isMobile = size.width < 768;
 
     useFrame(() => {
-        // Mobile: zoom out and position camera to center building between price input and stage card
-        const targetZ = isMobile ? 23 : 15;
-        const targetY = isMobile ? 0.5 : 1;
+        // Mobile: position building to fill space between price input and stage card
+        const targetZ = isMobile ? 20 : 15;
+        const targetY = isMobile ? 1.5 : 1;
 
         camera.position.z += (targetZ - camera.position.z) * 0.05;
         camera.position.y += (targetY - camera.position.y) * 0.05;
@@ -559,10 +559,11 @@ function MobileStageCard({ purchasePrice, isLoaded, isVisible }: { purchasePrice
     return (
         <div className={`
             md:hidden fixed bottom-0 left-0 right-0 z-30
-            bg-gradient-to-t from-southern-sand-200 via-southern-sand-200/95 to-transparent
-            pt-3 pb-16 px-4
+            bg-gradient-to-t from-southern-sand-200 via-southern-sand-200 to-transparent
+            pt-3 pb-6 px-4
+            pointer-events-none
             transition-opacity duration-300
-            ${isLoaded ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+            ${isLoaded ? 'opacity-100' : 'opacity-0'}
         `}>
             <AnimatePresence mode="wait">
                 <motion.div

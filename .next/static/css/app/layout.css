@@ -1651,6 +1651,9 @@ video {
 .font-normal {
   font-weight: 400;
 }
+.font-extrabold {
+  font-weight: 800;
+}
 .uppercase {
   text-transform: uppercase;
 }
@@ -2071,6 +2074,10 @@ video {
     height: 10rem;
   }
 
+  .md\:h-6 {
+    height: 1.5rem;
+  }
+
   .md\:w-2\/5 {
     width: 40%;
   }
@@ -2105,6 +2112,10 @@ video {
 
   .md\:w-auto {
     width: auto;
+  }
+
+  .md\:w-6 {
+    width: 1.5rem;
   }
 
   .md\:max-w-md {
