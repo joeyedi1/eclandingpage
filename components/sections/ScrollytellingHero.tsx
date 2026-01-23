@@ -501,9 +501,9 @@ function ResponsiveCameraRig() {
     const isMobile = size.width < 768;
 
     useFrame(() => {
-        // Mobile: zoom out more and position camera lower to avoid price input overlap
-        const targetZ = isMobile ? 28 : 15;
-        const targetY = isMobile ? -1 : 1;
+        // Mobile: zoom out and position camera to center building between price input and stage card
+        const targetZ = isMobile ? 23 : 15;
+        const targetY = isMobile ? 0 : 1;
 
         camera.position.z += (targetZ - camera.position.z) * 0.05;
         camera.position.y += (targetY - camera.position.y) * 0.05;
@@ -560,7 +560,7 @@ function MobileStageCard({ purchasePrice, isLoaded, isVisible }: { purchasePrice
         <div className={`
             md:hidden fixed bottom-0 left-0 right-0 z-30
             bg-gradient-to-t from-southern-sand-200 via-southern-sand-200/95 to-transparent
-            pt-8 pb-6 px-4
+            pt-3 pb-16 px-4
             transition-opacity duration-300
             ${isLoaded ? 'opacity-100' : 'opacity-0 pointer-events-none'}
         `}>
