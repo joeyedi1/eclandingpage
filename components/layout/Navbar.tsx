@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
+import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { NAV_LINKS } from '@/lib/constants';
 import { Button } from '@/components/ui/Button';
@@ -20,7 +20,10 @@ export const Navbar = () => {
     // Listen for page loaded event from ScrollytellingHero
     useEffect(() => {
         const handlePageLoaded = () => setIsPageLoaded(true);
-        const handlePageReset = () => setIsPageLoaded(false);
+        const handlePageReset = () => {
+            // Delay hiding to allow scroll animation to complete
+            setTimeout(() => setIsPageLoaded(false), 100);
+        };
         
         window.addEventListener('pageFullyLoaded', handlePageLoaded);
         window.addEventListener('resetScrollytelling', handlePageReset);
@@ -93,26 +96,29 @@ export const Navbar = () => {
             </div>
 
             {/* Mobile Menu Overlay */}
-            {mobileMenuOpen && (
-                <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="md:hidden bg-isabelline-50 border-t border-pine-tree-900/10 absolute w-full top-full left-0 flex flex-col p-6 gap-4 shadow-xl"
-                >
-                    {NAV_LINKS.map((link) => (
-                        <Link
-                            key={link.name}
-                            href={link.href}
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="text-lg font-serif text-pine-tree-900 hover:text-vintage-coin-400"
-                        >
-                            {link.name}
-                        </Link>
-                    ))}
-                    <Button className="w-full bg-pine-tree-900 text-isabelline-100">Book VVIP Preview</Button>
-                </motion.div>
-            )}
+            <AnimatePresence>
+                {mobileMenuOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="md:hidden bg-isabelline-50 border-t border-pine-tree-900/10 absolute w-full top-full left-0 flex flex-col p-6 gap-4 shadow-xl overflow-hidden z-[60]"
+                    >
+                        {NAV_LINKS.map((link) => (
+                            <Link
+                                key={link.name}
+                                href={link.href}
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="text-lg font-serif text-pine-tree-900 hover:text-vintage-coin-400"
+                            >
+                                {link.name}
+                            </Link>
+                        ))}
+                        <Button className="w-full bg-pine-tree-900 text-isabelline-100">Book VVIP Preview</Button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </motion.nav>
     );
 };

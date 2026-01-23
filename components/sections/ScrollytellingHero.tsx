@@ -25,6 +25,9 @@ const PAYMENT_STAGES = [
 // Each value represents when that stage ENDS
 const STAGE_THRESHOLDS = [0.10, 0.20, 0.30, 0.40, 0.55, 0.70, 0.85, 1.0];
 
+
+// Loan-to-value ratio for EC properties (75% financing)
+const LOAN_TO_VALUE_RATIO = 0.75;
 // ============================================
 // MORTGAGE CALCULATION HELPER
 // ============================================
@@ -185,15 +188,15 @@ function ProgressivePaymentOverlay({ purchasePrice, isLoaded }: { purchasePrice:
     const scroll = useScroll();
     const [currentStageIndex, setCurrentStageIndex] = useState(0);
     const [displayedPayment, setDisplayedPayment] = useState(0);
-    const [currentLoanQuantum, setCurrentLoanQuantum] = useState(purchasePrice * 0.75);
+    const [currentLoanQuantum, setCurrentLoanQuantum] = useState(purchasePrice * LOAN_TO_VALUE_RATIO);
     const [isInitialLoad, setIsInitialLoad] = useState(true);
     const purchasePriceRef = useRef(purchasePrice);
 
     // Skip animation on initial load
     useEffect(() => {
-        // Calculate initial payment immediately
+        // Calculate initial payment immediately using ref
         const stage = PAYMENT_STAGES[0];
-        const loanQuantum = purchasePrice * 0.75;
+        const loanQuantum = purchasePriceRef.current * LOAN_TO_VALUE_RATIO;
         const cumulativeLoan = (stage.cumulative / 100) * loanQuantum;
         const monthly = calculateMonthlyPayment(cumulativeLoan);
         setDisplayedPayment(monthly);
@@ -207,7 +210,7 @@ function ProgressivePaymentOverlay({ purchasePrice, isLoaded }: { purchasePrice:
     // Recalculate when purchasePrice changes
     useEffect(() => {
         purchasePriceRef.current = purchasePrice;
-        const newLoanQuantum = purchasePrice * 0.75;
+        const newLoanQuantum = purchasePrice * LOAN_TO_VALUE_RATIO;
         setCurrentLoanQuantum(newLoanQuantum);
         
         // Immediately recalculate the displayed payment for current stage
@@ -223,23 +226,34 @@ function ProgressivePaymentOverlay({ purchasePrice, isLoaded }: { purchasePrice:
 
         if (stageIndex !== currentStageIndex) {
             setCurrentStageIndex(stageIndex);
+            // Dispatch event for mobile card
+            window.dispatchEvent(new CustomEvent('stageChange', { 
+                detail: { stageIndex } 
+            }));
         }
 
         // Calculate monthly payment for current stage using ref for latest value
         const stage = PAYMENT_STAGES[stageIndex];
-        const loanQuantum = purchasePriceRef.current * 0.75;
+        const loanQuantum = purchasePriceRef.current * LOAN_TO_VALUE_RATIO;
         const cumulativeLoan = (stage.cumulative / 100) * loanQuantum;
         const monthly = calculateMonthlyPayment(cumulativeLoan);
 
-        // Smooth animation for payment display
+        // Smooth animation for payment display - only update if meaningful change
         setDisplayedPayment(prev => {
             const diff = monthly - prev;
-            if (Math.abs(diff) < 1) return monthly; // Snap to final value
-            return prev + diff * 0.15;
+            // Skip update if difference is negligible (reduces re-renders)
+            if (Math.abs(diff) < 0.5) return prev;
+            // Snap to final value when very close
+            if (Math.abs(diff) < 1) return monthly;
+            const newValue = prev + diff * 0.15;
+            // Dispatch payment update for mobile card
+            window.dispatchEvent(new CustomEvent('paymentUpdate', { 
+                detail: { payment: newValue, loanQuantum } 
+            }));
+            return newValue;
         });
     });
 
-    const currentStage = PAYMENT_STAGES[currentStageIndex];
     const progressPercent = ((currentStageIndex + 1) / PAYMENT_STAGES.length) * 100;
 
     return (
@@ -248,12 +262,22 @@ function ProgressivePaymentOverlay({ purchasePrice, isLoaded }: { purchasePrice:
             {PAYMENT_STAGES.map((stage, index) => (
                 <section
                     key={stage.name}
-                    className="h-screen flex items-center pointer-events-none pt-32 md:pt-0"
+                    className="h-screen flex pointer-events-none"
                     style={{
                         justifyContent: index % 2 === 0 ? 'flex-start' : 'flex-end',
+                        alignItems: 'center',
+                        paddingTop: '60px',
                     }}
                 >
-                    <div className={`px-4 md:px-20 ${index % 2 === 0 ? 'text-left' : 'text-right'} w-full md:w-auto transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+                    {/* Desktop only - hidden on mobile */}
+                    <div className={`
+                        hidden md:block
+                        px-4 md:px-20 
+                        ${index % 2 === 0 ? 'text-left' : 'text-right'} 
+                        w-full md:w-auto 
+                        transition-opacity duration-500 
+                        ${isLoaded ? 'opacity-100' : 'opacity-0'}
+                    `}>
                         <AnimatePresence mode="wait">
                             {currentStageIndex === index && (
                                 <motion.div
@@ -420,7 +444,7 @@ function PriceInputSection({ purchasePrice, setPurchasePrice }: { purchasePrice:
     }, [purchasePrice]);
 
     return (
-        <div className="absolute top-20 md:top-24 left-0 right-0 z-50 pointer-events-auto">
+        <div className="absolute top-20 md:top-24 left-0 right-0 z-[45] pointer-events-auto">
             <div className="max-w-7xl mx-auto px-4 md:px-20">
                 <div className="text-center text-vintage-coin-400/70">
                     <p className="text-xs md:text-base mb-1 md:mb-2">How much do you need for a</p>
@@ -477,8 +501,9 @@ function ResponsiveCameraRig() {
     const isMobile = size.width < 768;
 
     useFrame(() => {
-        const targetZ = isMobile ? 22 : 15;
-        const targetY = isMobile ? 0.5 : 1;
+        // Mobile: zoom out more and position camera lower to avoid price input overlap
+        const targetZ = isMobile ? 28 : 15;
+        const targetY = isMobile ? -1 : 1;
 
         camera.position.z += (targetZ - camera.position.z) * 0.05;
         camera.position.y += (targetY - camera.position.y) * 0.05;
@@ -489,22 +514,147 @@ function ResponsiveCameraRig() {
 }
 
 // ============================================
+// MOBILE STAGE CARD (Outside Canvas)
+// ============================================
+function MobileStageCard({ purchasePrice, isLoaded, isVisible }: { purchasePrice: number, isLoaded: boolean, isVisible: boolean }) {
+    const [currentStageIndex, setCurrentStageIndex] = useState(0);
+    const [displayedPayment, setDisplayedPayment] = useState(0);
+    const [loanQuantum, setLoanQuantum] = useState(purchasePrice * LOAN_TO_VALUE_RATIO);
+
+    // Listen for stage and payment updates from Canvas
+    useEffect(() => {
+        const handleStageChange = (e: CustomEvent) => {
+            setCurrentStageIndex(e.detail.stageIndex);
+        };
+        
+        const handlePaymentUpdate = (e: CustomEvent) => {
+            setDisplayedPayment(e.detail.payment);
+            setLoanQuantum(e.detail.loanQuantum);
+        };
+
+        window.addEventListener('stageChange', handleStageChange as EventListener);
+        window.addEventListener('paymentUpdate', handlePaymentUpdate as EventListener);
+        
+        return () => {
+            window.removeEventListener('stageChange', handleStageChange as EventListener);
+            window.removeEventListener('paymentUpdate', handlePaymentUpdate as EventListener);
+        };
+    }, []);
+
+    // Initialize with correct values
+    useEffect(() => {
+        const newLoanQuantum = purchasePrice * LOAN_TO_VALUE_RATIO;
+        setLoanQuantum(newLoanQuantum);
+        const stage = PAYMENT_STAGES[currentStageIndex];
+        const cumulativeLoan = (stage.cumulative / 100) * newLoanQuantum;
+        setDisplayedPayment(calculateMonthlyPayment(cumulativeLoan));
+    }, [purchasePrice, currentStageIndex]);
+
+    const stage = PAYMENT_STAGES[currentStageIndex];
+    const progressPercent = ((currentStageIndex + 1) / PAYMENT_STAGES.length) * 100;
+
+    // Don't render if not visible or not loaded
+    if (!isVisible || !isLoaded) return null;
+
+    return (
+        <div className={`
+            md:hidden fixed bottom-0 left-0 right-0 z-30
+            bg-gradient-to-t from-southern-sand-200 via-southern-sand-200/95 to-transparent
+            pt-8 pb-6 px-4
+            transition-opacity duration-300
+            ${isLoaded ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+        `}>
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={stage.name}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-center"
+                >
+                    {/* Stage Badge */}
+                    <div className="inline-block bg-vintage-coin-400 text-white text-[10px] font-medium px-2 py-0.5 rounded-full mb-2">
+                        Stage {currentStageIndex + 1} of {PAYMENT_STAGES.length}
+                    </div>
+
+                    {/* Stage Name */}
+                    <h2 className="text-xl font-light text-vintage-coin-400 mb-1">
+                        {stage.name.split(' ')[0]}{' '}
+                        <span className="font-serif italic text-taupe-400">
+                            {stage.name.split(' ').slice(1).join(' ')}
+                        </span>
+                    </h2>
+
+                    {/* Monthly Payment */}
+                    <p className="text-3xl font-bold text-vintage-coin-400 font-mono mb-1">
+                        ${Math.round(displayedPayment).toLocaleString()}
+                        <span className="text-sm text-taupe-400 font-normal">/mo</span>
+                    </p>
+
+                    {/* Stage Details - Compact */}
+                    <p className="text-xs text-vintage-coin-400/70 mb-2">
+                        {stage.cumulative}% drawn • ${Math.round((stage.cumulative / 100) * loanQuantum).toLocaleString()} principal
+                    </p>
+
+                    {/* Progress Bar */}
+                    <div className="max-w-xs mx-auto">
+                        <div className="h-1.5 bg-vintage-coin-400/20 rounded-full overflow-hidden">
+                            <motion.div
+                                className="h-full bg-vintage-coin-400 rounded-full"
+                                initial={{ width: 0 }}
+                                animate={{ width: `${progressPercent}%` }}
+                                transition={{ duration: 0.5 }}
+                            />
+                        </div>
+                        <div className="flex justify-between text-[9px] text-vintage-coin-400/50 mt-1">
+                            <span>Foundation</span>
+                            <span>Completion</span>
+                        </div>
+                    </div>
+                </motion.div>
+            </AnimatePresence>
+        </div>
+    );
+}
+
+// ============================================
 // MAIN COMPONENT
 // ============================================
 export default function ScrollytellingHero() {
     const [purchasePrice, setPurchasePrice] = useState(1500000);
     const [resetKey, setResetKey] = useState(0);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [isMobileCardVisible, setIsMobileCardVisible] = useState(true);
 
     // Listen for reset event from Navbar
     useEffect(() => {
         const handleReset = () => {
             setResetKey(prev => prev + 1);
             setIsLoaded(false); // Reset loading state on reset
+            setIsMobileCardVisible(true); // Show card again on reset
         };
 
         window.addEventListener('resetScrollytelling', handleReset);
         return () => window.removeEventListener('resetScrollytelling', handleReset);
+    }, []);
+
+    // Track scroll position to hide mobile card when past hero section
+    useEffect(() => {
+        const handleScroll = () => {
+            // Hide card as soon as user scrolls past the hero
+            // The scrollytelling uses 8 pages inside ScrollControls, but the hero container is 1 viewport
+            // So we hide the card once the user scrolls at all past the hero
+            const scrollY = window.scrollY;
+            const viewportHeight = window.innerHeight;
+            // Hide when we've scrolled just 10% past the hero section start
+            setIsMobileCardVisible(scrollY < viewportHeight * 0.1);
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll(); // Check initial position
+        
+        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     // Handle Canvas loaded - with small delay to ensure 3D is rendered
@@ -518,6 +668,14 @@ export default function ScrollytellingHero() {
 
     return (
         <div className="h-screen w-full relative bg-southern-sand-200 [&_*::-webkit-scrollbar]:hidden [&_*]:[scrollbar-width:none] [&_*]:[-ms-overflow-style:none]">
+            {/* Gradient fade overlay at top - fades content as it approaches navbar */}
+            <div 
+                className="absolute top-0 left-0 right-0 h-32 md:h-40 z-40 pointer-events-none"
+                style={{
+                    background: 'linear-gradient(to bottom, rgba(237, 227, 214, 1) 0%, rgba(237, 227, 214, 0.9) 70%, rgba(237, 227, 214, 0) 100%)'
+                }}
+            />
+            
             {/* Price Input - Only show after Canvas is loaded */}
             <div className={`transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                 <PriceInputSection purchasePrice={purchasePrice} setPurchasePrice={setPurchasePrice} />
@@ -540,8 +698,11 @@ export default function ScrollytellingHero() {
                 </ScrollControls>
             </Canvas>
 
-            {/* Scroll indicator - Only show after loaded */}
-            <div className={`absolute bottom-10 left-1/2 -translate-x-1/2 text-vintage-coin-400/30 animate-bounce transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+            {/* Mobile Stage Card - Fixed at bottom, outside Canvas */}
+            <MobileStageCard purchasePrice={purchasePrice} isLoaded={isLoaded} isVisible={isMobileCardVisible} />
+
+            {/* Scroll indicator - Only show after loaded, hidden on mobile */}
+            <div className={`absolute bottom-10 left-1/2 -translate-x-1/2 text-vintage-coin-400/30 animate-bounce transition-opacity duration-500 hidden md:block ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
                 <p className="text-xs md:text-sm uppercase tracking-[0.3em] whitespace-nowrap">Scroll to Explore</p>
             </div>
         </div>
