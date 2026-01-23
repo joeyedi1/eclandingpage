@@ -503,7 +503,7 @@ function ResponsiveCameraRig() {
     useFrame(() => {
         // Mobile: zoom out and position camera to center building between price input and stage card
         const targetZ = isMobile ? 23 : 15;
-        const targetY = isMobile ? 0 : 1;
+        const targetY = isMobile ? 1 : 1;
 
         camera.position.z += (targetZ - camera.position.z) * 0.05;
         camera.position.y += (targetY - camera.position.y) * 0.05;
