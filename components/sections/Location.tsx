@@ -83,14 +83,20 @@ export const Location = () => {
                         <div className="bg-vintage-coin-400 rounded-xl p-5 mt-auto">
                             <p className="text-southern-sand-200/80 text-xs uppercase tracking-widest mb-2">By MRT</p>
                             <div className="space-y-1.5">
-                                <p className="text-southern-sand-200 text-sm">
-                                    <span className="font-semibold">Orchard</span> — 2 stops
+                                <p className="text-southern-sand-200 text-sm flex items-center gap-1.5 flex-wrap">
+                                    <span className="font-semibold">Orchard</span>
+                                    <img src="/mrt-orchard.png" alt="NS22" className="h-4" />
+                                    <span>— 2 stops</span>
                                 </p>
-                                <p className="text-southern-sand-200 text-sm">
-                                    <span className="font-semibold">Marina Bay</span> — 5 stops
+                                <p className="text-southern-sand-200 text-sm flex items-center gap-1.5 flex-wrap">
+                                    <span className="font-semibold">Marina Bay</span>
+                                    <img src="/mrt-marina-bay.png" alt="NS27 CE2 TE20" className="h-4" />
+                                    <span>— 5 stops</span>
                                 </p>
-                                <p className="text-southern-sand-200 text-sm">
-                                    <span className="font-semibold">Woodlands</span> — Direct TEL
+                                <p className="text-southern-sand-200 text-sm flex items-center gap-1.5 flex-wrap">
+                                    <span className="font-semibold">Woodlands</span>
+                                    <img src="/mrt-woodlands.png" alt="NS9 TE2" className="h-4" />
+                                    <span>— Direct TEL</span>
                                 </p>
                             </div>
                         </div>
