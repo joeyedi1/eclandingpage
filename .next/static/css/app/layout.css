@@ -1093,6 +1093,9 @@ video {
 .resize {
   resize: both;
 }
+.scroll-mt-32 {
+  scroll-margin-top: 8rem;
+}
 .appearance-none {
   -webkit-appearance: none;
      -moz-appearance: none;

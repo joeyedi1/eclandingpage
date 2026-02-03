@@ -77,7 +77,7 @@ export const IMAGES = {
 export const NAV_LINKS = [
     { name: "Project Info", href: "#project-info" },
     { name: "Location", href: "#location" },
-    { name: "Floor Plans", href: "#floor-plans" },
+    { name: "Floor Plans", href: "#register" },
     { name: "Price List", href: "#prices" },
 ]
 

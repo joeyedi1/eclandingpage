@@ -13,7 +13,7 @@ const iconMap: Record<string, any> = {
 
 export const Highlights = () => {
     return (
-        <section className="py-12 md:py-16 bg-vintage-coin-400" id="project-info">
+        <section className="py-12 md:py-16 bg-vintage-coin-400 scroll-mt-32" id="project-info">
             <div className="max-w-7xl mx-auto px-4 md:px-12">
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-4">
                     {HIGHLIGHTS.map((item, i) => {
