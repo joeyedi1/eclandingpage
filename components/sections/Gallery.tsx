@@ -1,13 +1,13 @@
 "use client"
 
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { X } from "lucide-react"
+import { X, ChevronLeft, ChevronRight } from "lucide-react"
 import { GALLERY_IMAGES } from "@/lib/constants"
 
 const GALLERY_META = [
-    { label: "The Panorama", sub: "360° River Valley vista" },
+    { label: "The Panorama", sub: "360\u00B0 River Valley vista" },
     { label: "The Pool", sub: "Resort-style infinity pool" },
     { label: "The Garden", sub: "Landscaped pavilion grounds" },
     { label: "The Location", sub: "Singapore River & Jiak Kim" },
@@ -28,12 +28,47 @@ function Lightbox({
     image,
     meta,
     onClose,
+    onPrev,
+    onNext,
+    current,
+    total,
 }: {
     image: (typeof GALLERY_IMAGES)[number] | null
     meta: (typeof GALLERY_META)[number] | null
     onClose: () => void
+    onPrev: () => void
+    onNext: () => void
+    current: number
+    total: number
 }) {
+    const touchStartX = useRef<number | null>(null)
+
+    // Keyboard navigation
+    useEffect(() => {
+        const handleKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape") onClose()
+            if (e.key === "ArrowLeft") onPrev()
+            if (e.key === "ArrowRight") onNext()
+        }
+        window.addEventListener("keydown", handleKey)
+        return () => window.removeEventListener("keydown", handleKey)
+    }, [onClose, onPrev, onNext])
+
     if (!image || !meta) return null
+
+    // Swipe handlers
+    const handleTouchStart = (e: React.TouchEvent) => {
+        touchStartX.current = e.touches[0].clientX
+    }
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        if (touchStartX.current === null) return
+        const diff = e.changedTouches[0].clientX - touchStartX.current
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) onPrev()
+            else onNext()
+        }
+        touchStartX.current = null
+    }
 
     return (
         <motion.div
@@ -42,9 +77,12 @@ function Lightbox({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             onClick={onClose}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
             className="fixed inset-0 z-50 flex flex-col items-center justify-center cursor-pointer"
             style={{ background: "rgba(15,12,10,0.92)", backdropFilter: "blur(20px)" }}
         >
+            {/* Close button */}
             <button
                 onClick={onClose}
                 className="absolute top-6 right-6 text-white/60 hover:text-white transition-colors z-10"
@@ -52,24 +90,43 @@ function Lightbox({
                 <X size={28} />
             </button>
 
-            <motion.div
-                initial={{ opacity: 0, scale: 0.92 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.92 }}
-                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="relative w-[85vw] max-w-5xl max-h-[80vh] rounded-xl overflow-hidden"
-                style={{ boxShadow: "0 30px 80px rgba(0,0,0,0.5)" }}
-                onClick={(e) => e.stopPropagation()}
+            {/* Left arrow */}
+            <button
+                onClick={(e) => { e.stopPropagation(); onPrev() }}
+                className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors"
             >
-                <Image
-                    src={image.src}
-                    alt={image.alt}
-                    width={1600}
-                    height={900}
-                    className="w-full h-full object-contain"
-                    sizes="85vw"
-                />
-            </motion.div>
+                <ChevronLeft className="w-6 h-6 text-white/80" />
+            </button>
+
+            {/* Right arrow */}
+            <button
+                onClick={(e) => { e.stopPropagation(); onNext() }}
+                className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors"
+            >
+                <ChevronRight className="w-6 h-6 text-white/80" />
+            </button>
+
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={image.src}
+                    initial={{ opacity: 0, scale: 0.92 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.92 }}
+                    transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                    className="relative w-[85vw] max-w-5xl max-h-[80vh] rounded-xl overflow-hidden"
+                    style={{ boxShadow: "0 30px 80px rgba(0,0,0,0.5)" }}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <Image
+                        src={image.src}
+                        alt={image.alt}
+                        width={1600}
+                        height={900}
+                        className="w-full h-full object-contain"
+                        sizes="85vw"
+                    />
+                </motion.div>
+            </AnimatePresence>
 
             <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -80,8 +137,11 @@ function Lightbox({
                 <p className="font-serif text-2xl text-white/90 tracking-wider mb-1">
                     {meta.label}
                 </p>
-                <p className="text-xs text-white/50 tracking-widest">
+                <p className="text-xs text-white/50 tracking-widest mb-2">
                     {meta.sub}
+                </p>
+                <p className="text-xs text-white/30">
+                    {current + 1} / {total}
                 </p>
             </motion.div>
         </motion.div>
@@ -146,6 +206,20 @@ export function Gallery() {
 
     const currentLightbox = lightboxIdx !== null ? LAYOUT[lightboxIdx] : null
 
+    const handlePrev = useCallback(() => {
+        setLightboxIdx((prev) => {
+            if (prev === null) return null
+            return prev === 0 ? LAYOUT.length - 1 : prev - 1
+        })
+    }, [])
+
+    const handleNext = useCallback(() => {
+        setLightboxIdx((prev) => {
+            if (prev === null) return null
+            return prev === LAYOUT.length - 1 ? 0 : prev + 1
+        })
+    }, [])
+
     return (
         <section id="gallery" className="scroll-mt-32 py-16 md:py-24 bg-southern-sand-200/40">
             <div className="max-w-6xl mx-auto px-4 md:px-8">
@@ -165,7 +239,7 @@ export function Gallery() {
                     <div className="w-12 h-px bg-gold-400 mx-auto" />
                 </motion.div>
 
-                {/* HERO ROW — Aerial panoramic full width */}
+                {/* HERO ROW */}
                 {GALLERY_IMAGES[3] && (
                     <GalleryCard
                         image={GALLERY_IMAGES[3]}
@@ -178,9 +252,8 @@ export function Gallery() {
                     />
                 )}
 
-                {/* MIDDLE SECTION — 2 columns: pool (left, stretches full) + right stack */}
+                {/* MIDDLE SECTION */}
                 <div className="grid grid-cols-1 md:grid-cols-[1fr_1.6fr] gap-3 md:gap-4 mb-3 md:mb-4">
-                    {/* Left: Pool — fills entire height of right column */}
                     {GALLERY_IMAGES[0] && (
                         <GalleryCard
                             image={GALLERY_IMAGES[0]}
@@ -192,9 +265,7 @@ export function Gallery() {
                         />
                     )}
 
-                    {/* Right: Garden on top + Bridge & Skyline side by side below */}
                     <div className="flex flex-col gap-3 md:gap-4">
-                        {/* Garden — ultra wide */}
                         {GALLERY_IMAGES[1] && (
                             <GalleryCard
                                 image={GALLERY_IMAGES[1]}
@@ -205,7 +276,6 @@ export function Gallery() {
                             />
                         )}
 
-                        {/* Bridge + Skyline row */}
                         <div className="grid grid-cols-2 gap-3 md:gap-4">
                             {GALLERY_IMAGES[2] && (
                                 <GalleryCard
@@ -231,7 +301,7 @@ export function Gallery() {
                     </div>
                 </div>
 
-                {/* BOTTOM ROW — Site view full width */}
+                {/* BOTTOM ROW */}
                 {GALLERY_IMAGES[4] && (
                     <GalleryCard
                         image={GALLERY_IMAGES[4]}
@@ -246,11 +316,15 @@ export function Gallery() {
 
             {/* Lightbox */}
             <AnimatePresence>
-                {currentLightbox && (
+                {currentLightbox && lightboxIdx !== null && (
                     <Lightbox
                         image={GALLERY_IMAGES[currentLightbox.imgIdx]}
                         meta={GALLERY_META[currentLightbox.metaIdx]}
                         onClose={() => setLightboxIdx(null)}
+                        onPrev={handlePrev}
+                        onNext={handleNext}
+                        current={lightboxIdx}
+                        total={LAYOUT.length}
                     />
                 )}
             </AnimatePresence>

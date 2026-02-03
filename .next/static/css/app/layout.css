@@ -759,6 +759,12 @@ video {
 .top-full {
   top: 100%;
 }
+.left-4 {
+  left: 1rem;
+}
+.right-4 {
+  right: 1rem;
+}
 .-z-10 {
   z-index: -10;
 }
@@ -1785,6 +1791,12 @@ video {
 .text-white\/90 {
   color: rgb(255 255 255 / 0.9);
 }
+.text-white\/30 {
+  color: rgb(255 255 255 / 0.3);
+}
+.text-white\/80 {
+  color: rgb(255 255 255 / 0.8);
+}
 .underline {
   text-decoration-line: underline;
 }
@@ -1947,6 +1959,10 @@ video {
   background-color: rgb(255 255 255 / 0.1);
 }
 
+.hover\:bg-white\/20:hover {
+  background-color: rgb(255 255 255 / 0.2);
+}
+
 .hover\:text-taupe-400:hover {
   --tw-text-opacity: 1;
   color: rgb(179 166 150 / var(--tw-text-opacity, 1));
@@ -2047,6 +2063,14 @@ video {
 
   .md\:top-24 {
     top: 6rem;
+  }
+
+  .md\:left-8 {
+    left: 2rem;
+  }
+
+  .md\:right-8 {
+    right: 2rem;
   }
 
   .md\:col-span-1 {
