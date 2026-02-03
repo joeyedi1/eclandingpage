@@ -76,8 +76,8 @@ export const IMAGES = {
 export const NAV_LINKS = [
     { name: "Project Info", href: "#project-info" },
     { name: "Location", href: "#location" },
-    { name: "Floor Plans", href: "#register" },
     { name: "Price List", href: "#prices" },
+    { name: "Floor Plans", href: "#register" },
 ]
 
 // Keep legacy exports for any components that still reference them
