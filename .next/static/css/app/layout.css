@@ -747,6 +747,18 @@ video {
 .top-full {
   top: 100%;
 }
+.left-5 {
+  left: 1.25rem;
+}
+.right-6 {
+  right: 1.5rem;
+}
+.top-4 {
+  top: 1rem;
+}
+.top-6 {
+  top: 1.5rem;
+}
 .-z-10 {
   z-index: -10;
 }
@@ -880,6 +892,9 @@ video {
 .aspect-square {
   aspect-ratio: 1 / 1;
 }
+.aspect-\[1\.78\/1\] {
+  aspect-ratio: 1.78/1;
+}
 .h-1 {
   height: 0.25rem;
 }
@@ -943,6 +958,12 @@ video {
 .h-screen {
   height: 100vh;
 }
+.h-px {
+  height: 1px;
+}
+.max-h-\[80vh\] {
+  max-height: 80vh;
+}
 .min-h-\[800px\] {
   min-height: 800px;
 }
@@ -992,6 +1013,9 @@ video {
   width: -moz-max-content;
   width: max-content;
 }
+.w-\[85vw\] {
+  width: 85vw;
+}
 .max-w-2xl {
   max-width: 42rem;
 }
@@ -1012,6 +1036,9 @@ video {
 }
 .max-w-xs {
   max-width: 20rem;
+}
+.max-w-6xl {
+  max-width: 72rem;
 }
 .flex-shrink-0 {
   flex-shrink: 0;
@@ -1124,6 +1151,9 @@ video {
 }
 .items-stretch {
   align-items: stretch;
+}
+.justify-end {
+  justify-content: flex-end;
 }
 .justify-center {
   justify-content: center;
@@ -1421,6 +1451,11 @@ video {
   --tw-gradient-to: rgb(255 255 255 / 0) var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
+.from-black\/70 {
+  --tw-gradient-from: rgb(0 0 0 / 0.7) var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(0 0 0 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
 .via-black\/60 {
   --tw-gradient-to: rgb(0 0 0 / 0)  var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), rgb(0 0 0 / 0.6) var(--tw-gradient-via-position), var(--tw-gradient-to);
@@ -1437,6 +1472,10 @@ video {
   --tw-gradient-to: rgb(255 255 255 / 0)  var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), rgb(255 255 255 / 0.3) var(--tw-gradient-via-position), var(--tw-gradient-to);
 }
+.via-black\/15 {
+  --tw-gradient-to: rgb(0 0 0 / 0)  var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), rgb(0 0 0 / 0.15) var(--tw-gradient-via-position), var(--tw-gradient-to);
+}
 .to-taupe-400 {
   --tw-gradient-to: #B3A696 var(--tw-gradient-to-position);
 }
@@ -1448,6 +1487,10 @@ video {
 }
 .bg-center {
   background-position: center;
+}
+.object-contain {
+  -o-object-fit: contain;
+     object-fit: contain;
 }
 .object-cover {
   -o-object-fit: cover;
@@ -1606,6 +1649,9 @@ video {
   font-size: 0.75rem;
   line-height: 1rem;
 }
+.text-\[11px\] {
+  font-size: 11px;
+}
 .font-bold {
   font-weight: 700;
 }
@@ -1650,6 +1696,9 @@ video {
 }
 .tracking-widest {
   letter-spacing: 0.1em;
+}
+.tracking-\[0\.35em\] {
+  letter-spacing: 0.35em;
 }
 .text-gold-400 {
   --tw-text-opacity: 1;
@@ -1734,6 +1783,15 @@ video {
 }
 .text-white\/90 {
   color: rgb(255 255 255 / 0.9);
+}
+.text-white\/40 {
+  color: rgb(255 255 255 / 0.4);
+}
+.text-white\/50 {
+  color: rgb(255 255 255 / 0.5);
+}
+.text-white\/60 {
+  color: rgb(255 255 255 / 0.6);
 }
 .underline {
   text-decoration-line: underline;
@@ -1900,6 +1958,11 @@ video {
   color: rgb(122 107 94 / var(--tw-text-opacity, 1));
 }
 
+.hover\:text-white:hover {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
 .focus\:border-solid:focus {
   border-style: solid;
 }
@@ -1989,6 +2052,10 @@ video {
 
   .md\:col-span-1 {
     grid-column: span 1 / span 1;
+  }
+
+  .md\:col-span-2 {
+    grid-column: span 2 / span 2;
   }
 
   .md\:row-span-2 {
@@ -2142,6 +2209,10 @@ video {
     grid-template-columns: 2fr 3fr;
   }
 
+  .md\:grid-cols-\[1fr_1\.6fr\] {
+    grid-template-columns: 1fr 1.6fr;
+  }
+
   .md\:flex-row {
     flex-direction: row;
   }
@@ -2204,6 +2275,10 @@ video {
     padding: 2rem;
   }
 
+  .md\:p-7 {
+    padding: 1.75rem;
+  }
+
   .md\:px-12 {
     padding-left: 3rem;
     padding-right: 3rem;
@@ -2254,8 +2329,17 @@ video {
     padding-bottom: 6rem;
   }
 
+  .md\:px-8 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
   .md\:pt-6 {
     padding-top: 1.5rem;
+  }
+
+  .md\:pt-16 {
+    padding-top: 4rem;
   }
 
   .md\:text-left {
@@ -2315,6 +2399,10 @@ video {
   .md\:text-xs {
     font-size: 0.75rem;
     line-height: 1rem;
+  }
+
+  .md\:text-\[42px\] {
+    font-size: 42px;
   }
 }
 

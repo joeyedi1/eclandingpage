@@ -48,9 +48,8 @@ export const GALLERY_IMAGES = [
     { src: "/gallery-garden.png", alt: "Expansive garden lawn and pavilion" },
     { src: "/gallery-river-bridge.png", alt: "Aerial view of Singapore River and Jiak Kim Bridge" },
     { src: "/gallery-aerial.png", alt: "Aerial view of River Valley Green site" },
-    // Add more images here as they are finalized
-    // { src: "/gallery-cityview.png", alt: "City skyline view from River Modern" },
-    // { src: "/gallery-panoramic.png", alt: "360° panoramic view of surroundings" },
+    { src: "/gallery-site.png", alt: "River Modern development site along Singapore River" },      
+    { src: "/gallery-skyline.png", alt: "City skyline view from River Valley" },                  
 ]
 
 export const UNIT_MIX = [
