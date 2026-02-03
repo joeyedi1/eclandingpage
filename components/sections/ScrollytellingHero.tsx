@@ -58,8 +58,211 @@ function getStageFromScroll(offset: number): number {
 }
 
 // ============================================
-// 3D BUILDING MODEL
+// 3D BUILDING MODEL — River Modern
 // ============================================
+
+// Reusable tower component
+function Tower({
+    floorCount,
+    width,
+    depth,
+    floorHeight,
+    position,
+}: {
+    floorCount: number;
+    width: number;
+    depth: number;
+    floorHeight: number;
+    position: [number, number, number];
+}) {
+    const totalHeight = floorCount * floorHeight;
+    const facadeColor = "#C8B99A";
+    const balconyColor = "#D5C9B5";
+    const accentColor = "#A89880";
+    const mullionColor = "#8A7A68";
+
+    return (
+        <group position={position}>
+            {/* Main glass core — golden sunset mirror */}
+            <mesh position={[0, totalHeight / 2, 0]}>
+                <boxGeometry args={[width * 0.94, totalHeight, depth * 0.94]} />
+                <meshPhysicalMaterial
+                    color="#B8965A"
+                    metalness={1}
+                    roughness={0.03}
+                    envMapIntensity={3.5}
+                    clearcoat={1}
+                    clearcoatRoughness={0.05}
+                />
+            </mesh>
+
+            {/* Floor slabs + balconies + glass panels */}
+            {Array.from({ length: floorCount }).map((_, i) => {
+                const y = i * floorHeight;
+                return (
+                    <group key={`floor-${i}`} position={[0, y, 0]}>
+                        {/* Floor slab — thin to maximize glass */}
+                        <mesh position={[0, 0, 0]}>
+                            <boxGeometry args={[width, 0.04, depth]} />
+                            <meshStandardMaterial color={balconyColor} roughness={0.7} />
+                        </mesh>
+
+                        {/* Glass balcony railing — front */}
+                        <mesh position={[0, floorHeight * 0.45, depth / 2 + 0.02]}>
+                            <boxGeometry args={[width, floorHeight * 0.4, 0.015]} />
+                            <meshPhysicalMaterial
+                                color="#C8A868"
+                                metalness={0.8}
+                                roughness={0.1}
+                                transparent
+                                opacity={0.35}
+                                envMapIntensity={3}
+                            />
+                        </mesh>
+
+                        {/* Glass balcony railing — back */}
+                        <mesh position={[0, floorHeight * 0.45, -(depth / 2 + 0.02)]}>
+                            <boxGeometry args={[width, floorHeight * 0.4, 0.015]} />
+                            <meshPhysicalMaterial
+                                color="#C8A868"
+                                metalness={0.8}
+                                roughness={0.1}
+                                transparent
+                                opacity={0.35}
+                                envMapIntensity={3}
+                            />
+                        </mesh>
+
+                        {/* Side facade trim — left */}
+                        <mesh position={[-(width / 2), floorHeight / 2, 0]}>
+                            <boxGeometry args={[0.03, floorHeight * 0.9, depth * 0.96]} />
+                            <meshStandardMaterial color={facadeColor} roughness={0.6} />
+                        </mesh>
+
+                        {/* Side facade trim — right */}
+                        <mesh position={[width / 2, floorHeight / 2, 0]}>
+                            <boxGeometry args={[0.03, floorHeight * 0.9, depth * 0.96]} />
+                            <meshStandardMaterial color={facadeColor} roughness={0.6} />
+                        </mesh>
+                    </group>
+                );
+            })}
+
+            {/* Vertical mullions — front face */}
+            {Array.from({ length: 5 }).map((_, i) => {
+                const x = (i - 2) * (width / 4.5);
+                return (
+                    <group key={`mf-${i}`}>
+                        <mesh position={[x, totalHeight / 2, depth / 2]}>
+                            <boxGeometry args={[0.03, totalHeight, 0.03]} />
+                            <meshStandardMaterial color={mullionColor} />
+                        </mesh>
+                        <mesh position={[x, totalHeight / 2, -(depth / 2)]}>
+                            <boxGeometry args={[0.03, totalHeight, 0.03]} />
+                            <meshStandardMaterial color={mullionColor} />
+                        </mesh>
+                    </group>
+                );
+            })}
+
+            {/* Crown / rooftop cap */}
+            <mesh position={[0, totalHeight + 0.1, 0]}>
+                <boxGeometry args={[width * 1.02, 0.2, depth * 1.02]} />
+                <meshStandardMaterial color={facadeColor} roughness={0.4} metalness={0.2} />
+            </mesh>
+
+            {/* Rooftop feature — mechanical penthouse */}
+            <mesh position={[0, totalHeight + 0.35, 0]}>
+                <boxGeometry args={[width * 0.5, 0.3, depth * 0.5]} />
+                <meshStandardMaterial color={accentColor} roughness={0.5} />
+            </mesh>
+        </group>
+    );
+}
+
+// Simple tree
+function Tree({ position }: { position: [number, number, number] }) {
+    return (
+        <group position={position}>
+            <mesh position={[0, 0.2, 0]}>
+                <cylinderGeometry args={[0.03, 0.04, 0.4, 6]} />
+                <meshStandardMaterial color="#5A4A38" />
+            </mesh>
+            <mesh position={[0, 0.55, 0]}>
+                <sphereGeometry args={[0.22, 8, 6]} />
+                <meshStandardMaterial color="#4A7A42" roughness={0.9} />
+            </mesh>
+            <mesh position={[0.08, 0.65, 0.05]}>
+                <sphereGeometry args={[0.16, 8, 6]} />
+                <meshStandardMaterial color="#3D6B35" roughness={0.9} />
+            </mesh>
+            <mesh position={[-0.06, 0.48, -0.04]}>
+                <sphereGeometry args={[0.14, 8, 6]} />
+                <meshStandardMaterial color="#5A8A4E" roughness={0.9} />
+            </mesh>
+        </group>
+    );
+}
+
+// Arch bridge
+function ArchBridge({ span, height, position }: { span: number; height: number; position: [number, number, number] }) {
+    const segments = 16;
+    return (
+        <group position={position}>
+            {Array.from({ length: segments }).map((_, i) => {
+                const t = i / (segments - 1);
+                const x = (t - 0.5) * span;
+                const y = Math.sin(t * Math.PI) * height;
+                const nextT = (i + 1) / (segments - 1);
+                const nextX = (nextT - 0.5) * span;
+                const nextY = Math.sin(nextT * Math.PI) * height;
+                const midX = (x + nextX) / 2;
+                const midY = (y + nextY) / 2;
+                const dx = nextX - x;
+                const dy = nextY - y;
+                const len = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx);
+
+                return i < segments - 1 ? (
+                    <mesh key={`arch-${i}`} position={[midX, midY, 0]} rotation={[0, 0, angle]}>
+                        <boxGeometry args={[len, 0.06, 0.06]} />
+                        <meshStandardMaterial color="#B8B0A0" metalness={0.6} roughness={0.3} />
+                    </mesh>
+                ) : null;
+            })}
+
+            {/* Bridge deck */}
+            <mesh position={[0, 0, 0]}>
+                <boxGeometry args={[span * 0.95, 0.08, 0.8]} />
+                <meshStandardMaterial color="#C0B8A8" roughness={0.5} metalness={0.2} />
+            </mesh>
+
+            {/* Deck railings */}
+            <mesh position={[0, 0.12, 0.38]}>
+                <boxGeometry args={[span * 0.9, 0.18, 0.02]} />
+                <meshStandardMaterial color="#B0A898" transparent opacity={0.5} metalness={0.4} />
+            </mesh>
+            <mesh position={[0, 0.12, -0.38]}>
+                <boxGeometry args={[span * 0.9, 0.18, 0.02]} />
+                <meshStandardMaterial color="#B0A898" transparent opacity={0.5} metalness={0.4} />
+            </mesh>
+
+            {/* Vertical cables from arch to deck */}
+            {Array.from({ length: 8 }).map((_, i) => {
+                const t = (i + 1) / 9;
+                const x = (t - 0.5) * span * 0.9;
+                const archY = Math.sin(t * Math.PI) * height;
+                return (
+                    <mesh key={`cable-${i}`} position={[x, archY / 2, 0]}>
+                        <boxGeometry args={[0.015, archY, 0.015]} />
+                        <meshStandardMaterial color="#A09888" metalness={0.5} />
+                    </mesh>
+                );
+            })}
+        </group>
+    );
+}
+
 function BuildingModel() {
     const meshRef = useRef<THREE.Group>(null);
     const scroll = useScroll();
@@ -67,115 +270,94 @@ function BuildingModel() {
     useFrame((state, delta) => {
         if (!meshRef.current) return;
 
-        // Building grows as user scrolls (0 to 1)
         const growth = Math.max(0.01, scroll.offset);
-        meshRef.current.scale.y = growth * 0.8;
+        // Eased growth — starts taller so light catches facades earlier
+        const easedGrowth = 0.15 + growth * 0.65;
+        meshRef.current.scale.y = easedGrowth;
         meshRef.current.scale.x = 1;
         meshRef.current.scale.z = 1;
 
-        // Gentle rotation for 3D effect
         meshRef.current.rotation.y += delta * 0.05;
     });
 
-    const floors = Array.from({ length: 8 });
-    const tallerFloors = Array.from({ length: 10 });
-
-    const Mullions = ({ height, width, count = 3 }: { height: number, width: number, count?: number }) => (
-        <group>
-            {Array.from({ length: count }).map((_, i) => {
-                const x = (i - (count - 1) / 2) * (width / count);
-                return (
-                    <group key={i} position={[x, height / 2, 0]}>
-                        <mesh position={[0, 0, width / 2]}>
-                            <boxGeometry args={[0.05, height, 0.05]} />
-                            <meshStandardMaterial color="#5A4B3E" />
-                        </mesh>
-                        <mesh position={[0, 0, -width / 2]}>
-                            <boxGeometry args={[0.05, height, 0.05]} />
-                            <meshStandardMaterial color="#5A4B3E" />
-                        </mesh>
-                    </group>
-                )
-            })}
-            <mesh position={[width / 2, height / 2, 0]}>
-                <boxGeometry args={[0.05, height, width]} />
-                <meshStandardMaterial color="#5A4B3E" />
-            </mesh>
-            <mesh position={[-width / 2, height / 2, 0]}>
-                <boxGeometry args={[0.05, height, width]} />
-                <meshStandardMaterial color="#5A4B3E" />
-            </mesh>
-        </group>
-    );
+    const leftFloors = 16;
+    const rightFloors = 22;
+    const floorH = 0.24;
+    const towerW = 1.4;
+    const towerD = 1.2;
 
     return (
-        <group ref={meshRef} position={[0, -2.5, 0]} scale={[0.85, 0.85, 0.85]}>
-            {/* LEFT TOWER */}
-            <group position={[-1.2, 0, 0]}>
-                <mesh position={[0, 2, 0]}>
-                    <boxGeometry args={[1.4, 4, 1.4]} />
-                    <meshStandardMaterial color="#A6B3C3" metalness={0.9} roughness={0.05} />
-                </mesh>
-                <Mullions height={4} width={1.5} count={4} />
-                {floors.map((_, i) => (
-                    <group key={`l-${i}`} position={[0, i * 0.5 + 0.25, 0]}>
-                        <mesh>
-                            <boxGeometry args={[1.6, 0.08, 1.6]} />
-                            <meshStandardMaterial color="#EDE3D6" />
-                        </mesh>
-                        <mesh position={[0, 0.1, 0]}>
-                            <boxGeometry args={[1.55, 0.1, 1.55]} />
-                            <meshStandardMaterial color="#7A6B5E" transparent opacity={0.3} />
-                        </mesh>
-                    </group>
-                ))}
-                <mesh position={[0, 4.1, 0]}>
-                    <boxGeometry args={[1.4, 0.4, 1.4]} />
-                    <meshStandardMaterial color="#4A5D4F" />
-                </mesh>
-            </group>
+        <group ref={meshRef} position={[0, -2.8, 0]} scale={[0.7, 0.7, 0.7]}>
+            {/* LEFT TOWER — shorter */}
+            <Tower floorCount={leftFloors} width={towerW} depth={towerD} floorHeight={floorH} position={[-1.3, 0.5, 0]} />
 
-            {/* RIGHT TOWER (Taller) */}
-            <group position={[1.2, 0, 0]}>
-                <mesh position={[0, 2.5, 0]}>
-                    <boxGeometry args={[1.4, 5, 1.4]} />
-                    <meshStandardMaterial color="#A6B3C3" metalness={0.9} roughness={0.05} />
-                </mesh>
-                <Mullions height={5} width={1.5} count={4} />
-                {tallerFloors.map((_, i) => (
-                    <group key={`r-${i}`} position={[0, i * 0.5 + 0.25, 0]}>
-                        <mesh>
-                            <boxGeometry args={[1.6, 0.08, 1.6]} />
-                            <meshStandardMaterial color="#EDE3D6" />
-                        </mesh>
-                        <mesh position={[0, 0.1, 0]}>
-                            <boxGeometry args={[1.55, 0.1, 1.55]} />
-                            <meshStandardMaterial color="#7A6B5E" transparent opacity={0.3} />
-                        </mesh>
-                    </group>
-                ))}
-                <mesh position={[0, 5.1, 0]}>
-                    <boxGeometry args={[1.4, 0.6, 1.4]} />
-                    <meshStandardMaterial color="#4A5D4F" />
-                </mesh>
-            </group>
+            {/* RIGHT TOWER — taller */}
+            <Tower floorCount={rightFloors} width={towerW} depth={towerD} floorHeight={floorH} position={[1.3, 0.5, 0]} />
 
-            {/* SKY BRIDGE */}
-            <group position={[0, 3, 0]}>
-                <mesh>
-                    <boxGeometry args={[2, 0.2, 1]} />
-                    <meshStandardMaterial color="#7A6B5E" metalness={0.5} />
-                </mesh>
-                <mesh position={[0, 0.2, 0]}>
-                    <boxGeometry args={[2, 0.2, 0.9]} />
-                    <meshStandardMaterial color="#A6B3C3" transparent opacity={0.4} />
-                </mesh>
-            </group>
+            {/* ARCH BRIDGE at base */}
+            <ArchBridge span={3.8} height={0.9} position={[0, 0.8, 0.8]} />
 
-            {/* PODIUM BASE */}
-            <mesh position={[0, 0, 0]}>
-                <boxGeometry args={[5, 0.5, 4]} />
-                <meshStandardMaterial color="#7A6B5E" roughness={0.5} />
+            {/* RIVER / WATER PLANE */}
+            <mesh position={[0, 0.1, 0.8]} rotation={[-Math.PI / 2, 0, 0]}>
+                <planeGeometry args={[6, 3]} />
+                <meshPhysicalMaterial color="#5A8A7A" metalness={0.2} roughness={0.1} transparent opacity={0.7} />
+            </mesh>
+
+            {/* GROUND */}
+            <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                <planeGeometry args={[8, 6]} />
+                <meshStandardMaterial color="#6A8A5A" roughness={0.95} />
+            </mesh>
+
+            {/* Podium / arrival deck */}
+            <mesh position={[0, 0.35, -0.6]}>
+                <boxGeometry args={[4.2, 0.15, 1.8]} />
+                <meshStandardMaterial color="#C8BCA8" roughness={0.6} />
+            </mesh>
+            <mesh position={[-1.3, 0.43, -1.6]}>
+                <boxGeometry args={[1.6, 0.05, 0.4]} />
+                <meshStandardMaterial color="#B8AE9A" roughness={0.5} />
+            </mesh>
+            <mesh position={[1.3, 0.43, -1.6]}>
+                <boxGeometry args={[1.6, 0.05, 0.4]} />
+                <meshStandardMaterial color="#B8AE9A" roughness={0.5} />
+            </mesh>
+
+            {/* TREES — left */}
+            <Tree position={[-2.2, 0, 0.3]} />
+            <Tree position={[-2.5, 0, -0.5]} />
+            <Tree position={[-2.0, 0, -1.0]} />
+            <Tree position={[-2.6, 0, 0.9]} />
+            <Tree position={[-1.9, 0, 1.5]} />
+
+            {/* TREES — right */}
+            <Tree position={[2.2, 0, 0.3]} />
+            <Tree position={[2.5, 0, -0.5]} />
+            <Tree position={[2.0, 0, -1.0]} />
+            <Tree position={[2.6, 0, 0.9]} />
+            <Tree position={[1.9, 0, 1.5]} />
+
+            {/* TREES — river bank */}
+            <Tree position={[-1.3, 0, 2.0]} />
+            <Tree position={[0, 0, 2.3]} />
+            <Tree position={[1.3, 0, 2.0]} />
+            <Tree position={[-0.7, 0, 2.5]} />
+            <Tree position={[0.7, 0, 2.5]} />
+
+            {/* TREES — behind */}
+            <Tree position={[-0.5, 0, -2.0]} />
+            <Tree position={[0.5, 0, -2.0]} />
+            <Tree position={[-1.5, 0, -1.8]} />
+            <Tree position={[1.5, 0, -1.8]} />
+
+            {/* River bank edges */}
+            <mesh position={[0, 0.2, 2.4]}>
+                <boxGeometry args={[5, 0.15, 0.1]} />
+                <meshStandardMaterial color="#7A8A6A" roughness={0.8} />
+            </mesh>
+            <mesh position={[0, 0.2, -0.8]}>
+                <boxGeometry args={[5, 0.15, 0.1]} />
+                <meshStandardMaterial color="#7A8A6A" roughness={0.8} />
             </mesh>
         </group>
     );
@@ -501,9 +683,8 @@ function ResponsiveCameraRig() {
     const isMobile = size.width < 768;
 
     useFrame(() => {
-        // Mobile: position building to fill space between price input and stage card
-        const targetZ = isMobile ? 23 : 15;
-        const targetY = isMobile ? 0.5 : 1;
+        const targetZ = isMobile ? 24 : 16;
+        const targetY = isMobile ? 1.5 : 2;
 
         camera.position.z += (targetZ - camera.position.z) * 0.05;
         camera.position.y += (targetY - camera.position.y) * 0.05;
@@ -685,13 +866,18 @@ export default function ScrollytellingHero() {
             <Canvas
                 key={resetKey}
                 shadows
-                camera={{ position: [0, 1, 15], fov: 30 }}
+                camera={{ position: [0, 2, 16], fov: 32 }}
                 onCreated={handleCanvasReady}
             >
                 <ResponsiveCameraRig />
-                <ambientLight intensity={0.5} />
-                <directionalLight position={[5, 10, 5]} intensity={1.5} castShadow />
-                <Environment preset="city" />
+                <ambientLight intensity={0.5} color="#FFE0C0" />
+                <directionalLight position={[4, 6, 4]} intensity={2} castShadow color="#FFCB8A" />
+                <directionalLight position={[-3, 5, -2]} intensity={0.8} color="#FFD4A8" />
+                {/* Golden sunset glow — hits glass from the front */}
+                <pointLight position={[0, 3, 8]} intensity={15} color="#FF9940" distance={20} decay={2} />
+                {/* Warm rim light from side */}
+                <pointLight position={[6, 4, 0]} intensity={8} color="#FFB060" distance={15} decay={2} />
+                <Environment preset="sunset" />
 
                 <ScrollControls pages={8} damping={0.3}>
                     <BuildingModel />
@@ -703,8 +889,8 @@ export default function ScrollytellingHero() {
             <MobileStageCard purchasePrice={purchasePrice} isLoaded={isLoaded} isVisible={isMobileCardVisible} />
 
             {/* Scroll indicator - Only show after loaded, hidden on mobile */}
-            <div className={`absolute bottom-10 left-1/2 -translate-x-1/2 text-vintage-coin-400/30 animate-bounce transition-opacity duration-500 hidden md:block ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
-                <p className="text-xs md:text-sm uppercase tracking-[0.3em] whitespace-nowrap">Scroll to Explore</p>
+            <div className={`absolute bottom-10 left-1/2 -translate-x-1/2 text-vintage-coin-400/60 animate-bounce transition-opacity duration-500 hidden md:block ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+                <p className="text-xs md:text-sm uppercase tracking-[0.3em] whitespace-nowrap text-center mr-[-0.3em]">Scroll to Explore</p>
             </div>
         </div>
     );

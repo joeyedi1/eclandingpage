@@ -862,6 +862,9 @@ video {
 .mt-auto {
   margin-top: auto;
 }
+.mr-\[-0\.3em\] {
+  margin-right: -0.3em;
+}
 .block {
   display: block;
 }
@@ -1909,6 +1912,13 @@ video {
 .text-balance {
     text-wrap: balance;
   }
+.glass {
+  border-width: 1px;
+  border-color: rgb(255 255 255 / 0.1);
+  background-color: rgb(255 255 255 / 0.05);
+  --tw-backdrop-blur: blur(16px);
+  backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+}
 
 .placeholder\:text-taupe-400::-moz-placeholder {
   --tw-text-opacity: 1;
