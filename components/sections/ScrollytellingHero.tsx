@@ -201,7 +201,7 @@ function ProgressivePaymentOverlay({ purchasePrice, isLoaded }: { purchasePrice:
         const monthly = calculateMonthlyPayment(cumulativeLoan);
         setDisplayedPayment(monthly);
         setCurrentLoanQuantum(loanQuantum);
-        
+
         // Mark initial load complete after a short delay
         const timer = setTimeout(() => setIsInitialLoad(false), 100);
         return () => clearTimeout(timer);
@@ -212,7 +212,7 @@ function ProgressivePaymentOverlay({ purchasePrice, isLoaded }: { purchasePrice:
         purchasePriceRef.current = purchasePrice;
         const newLoanQuantum = purchasePrice * LOAN_TO_VALUE_RATIO;
         setCurrentLoanQuantum(newLoanQuantum);
-        
+
         // Immediately recalculate the displayed payment for current stage
         const stage = PAYMENT_STAGES[currentStageIndex];
         const cumulativeLoan = (stage.cumulative / 100) * newLoanQuantum;
@@ -227,8 +227,8 @@ function ProgressivePaymentOverlay({ purchasePrice, isLoaded }: { purchasePrice:
         if (stageIndex !== currentStageIndex) {
             setCurrentStageIndex(stageIndex);
             // Dispatch event for mobile card
-            window.dispatchEvent(new CustomEvent('stageChange', { 
-                detail: { stageIndex } 
+            window.dispatchEvent(new CustomEvent('stageChange', {
+                detail: { stageIndex }
             }));
         }
 
@@ -247,8 +247,8 @@ function ProgressivePaymentOverlay({ purchasePrice, isLoaded }: { purchasePrice:
             if (Math.abs(diff) < 1) return monthly;
             const newValue = prev + diff * 0.15;
             // Dispatch payment update for mobile card
-            window.dispatchEvent(new CustomEvent('paymentUpdate', { 
-                detail: { payment: newValue, loanQuantum } 
+            window.dispatchEvent(new CustomEvent('paymentUpdate', {
+                detail: { payment: newValue, loanQuantum }
             }));
             return newValue;
         });
@@ -388,17 +388,17 @@ function PriceInputSection({ purchasePrice, setPurchasePrice }: { purchasePrice:
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const raw = e.target.value.replace(/[^0-9]/g, '');
-        
+
         // Allow empty/zero state while typing
         if (!raw || raw === '0') {
             setInputValue('0');
             setHasChanges(purchasePrice !== 0);
             return;
         }
-        
+
         const formatted = formatWithCommas(raw);
         setInputValue(formatted);
-        
+
         const parsed = parseInt(raw);
         if (!isNaN(parsed) && parsed > 0 && parsed <= 99999999) {
             setHasChanges(parsed !== purchasePrice);
@@ -467,7 +467,7 @@ function PriceInputSection({ purchasePrice, setPurchasePrice }: { purchasePrice:
                         </div>
                     </div>
                     <p className="text-sm md:text-lg font-medium mt-1 md:mt-2">Property</p>
-                    
+
                     {/* Apply Button - shows when there are changes */}
                     <AnimatePresence>
                         {hasChanges && (
@@ -482,7 +482,7 @@ function PriceInputSection({ purchasePrice, setPurchasePrice }: { purchasePrice:
                             </motion.button>
                         )}
                     </AnimatePresence>
-                    
+
                     {/* Hint text */}
                     <p className="text-[10px] md:text-xs text-vintage-coin-400/60 mt-1 md:mt-2">
                         {hasChanges ? "Press Enter or click Apply" : "Click to edit price"}
@@ -526,7 +526,7 @@ function MobileStageCard({ purchasePrice, isLoaded, isVisible }: { purchasePrice
         const handleStageChange = (e: CustomEvent) => {
             setCurrentStageIndex(e.detail.stageIndex);
         };
-        
+
         const handlePaymentUpdate = (e: CustomEvent) => {
             setDisplayedPayment(e.detail.payment);
             setLoanQuantum(e.detail.loanQuantum);
@@ -534,7 +534,7 @@ function MobileStageCard({ purchasePrice, isLoaded, isVisible }: { purchasePrice
 
         window.addEventListener('stageChange', handleStageChange as EventListener);
         window.addEventListener('paymentUpdate', handlePaymentUpdate as EventListener);
-        
+
         return () => {
             window.removeEventListener('stageChange', handleStageChange as EventListener);
             window.removeEventListener('paymentUpdate', handlePaymentUpdate as EventListener);
@@ -654,7 +654,7 @@ export default function ScrollytellingHero() {
 
         window.addEventListener('scroll', handleScroll, { passive: true });
         handleScroll(); // Check initial position
-        
+
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
@@ -670,22 +670,22 @@ export default function ScrollytellingHero() {
     return (
         <div className="h-screen w-full relative bg-southern-sand-200 [&_*::-webkit-scrollbar]:hidden [&_*]:[scrollbar-width:none] [&_*]:[-ms-overflow-style:none]">
             {/* Gradient fade overlay at top - fades content as it approaches navbar */}
-            <div 
+            <div
                 className="absolute top-0 left-0 right-0 h-32 md:h-40 z-40 pointer-events-none"
                 style={{
                     background: 'linear-gradient(to bottom, rgba(237, 227, 214, 1) 0%, rgba(237, 227, 214, 0.9) 70%, rgba(237, 227, 214, 0) 100%)'
                 }}
             />
-            
+
             {/* Price Input - Only show after Canvas is loaded */}
             <div className={`transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                 <PriceInputSection purchasePrice={purchasePrice} setPurchasePrice={setPurchasePrice} />
             </div>
-            
-            <Canvas 
-                key={resetKey} 
-                shadows 
-                camera={{ position: [0, 1, 15], fov: 30 }} 
+
+            <Canvas
+                key={resetKey}
+                shadows
+                camera={{ position: [0, 1, 15], fov: 30 }}
                 onCreated={handleCanvasReady}
             >
                 <ResponsiveCameraRig />

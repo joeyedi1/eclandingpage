@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { NAV_LINKS } from '@/lib/constants';
@@ -49,6 +50,19 @@ export const Navbar = () => {
         }, 300);
     };
 
+    const scrollToRegister = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setMobileMenuOpen(false); // Close mobile menu if open
+        
+        const registerSection = document.getElementById('register');
+        if (registerSection) {
+            registerSection.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    };
+
     return (
         <motion.nav
             initial={{ opacity: 0, y: -20 }}
@@ -67,9 +81,16 @@ export const Navbar = () => {
                 <a 
                     href="/"
                     onClick={scrollToTop}
-                    className="text-2xl font-serif font-bold text-pine-tree-900 tracking-tighter cursor-pointer"
+                    className="cursor-pointer"
                 >
-                    AURA <span className="text-vintage-coin-400">EC</span>
+                    <Image
+                        src="/river-modern-logo.png"
+                        alt="River Modern"
+                        width={140}
+                        height={50}
+                        className="h-8 md:h-10 w-auto"
+                        priority
+                    />
                 </a>
 
                 {/* Desktop Links */}
@@ -83,7 +104,12 @@ export const Navbar = () => {
                             {link.name}
                         </Link>
                     ))}
-                    <Button className="bg-pine-tree-900 text-isabelline-100 hover:bg-pine-tree-800">Book VVIP Preview</Button>
+                    <Button 
+                        onClick={scrollToRegister}
+                        className="bg-pine-tree-900 text-isabelline-100 hover:bg-pine-tree-800"
+                    >
+                        Book VVIP Preview
+                    </Button>
                 </div>
 
                 {/* Mobile Menu Toggle */}
@@ -115,7 +141,12 @@ export const Navbar = () => {
                                 {link.name}
                             </Link>
                         ))}
-                        <Button className="w-full bg-pine-tree-900 text-isabelline-100">Book VVIP Preview</Button>
+                        <Button 
+                            onClick={scrollToRegister}
+                            className="w-full bg-pine-tree-900 text-isabelline-100"
+                        >
+                            Book VVIP Preview
+                        </Button>
                     </motion.div>
                 )}
             </AnimatePresence>
