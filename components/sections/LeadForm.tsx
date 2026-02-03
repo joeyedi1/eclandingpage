@@ -131,14 +131,14 @@ export const LeadForm = () => {
     // Success State
     if (isSubmitted) {
         return (
-            <Section className="py-24 bg-southern-sand-200" id="register">
-                <div className="max-w-5xl mx-auto grid md:grid-cols-[2fr_3fr] gap-0 bg-white rounded-3xl overflow-hidden shadow-2xl border border-vintage-coin-400/10">
-                    <div className="bg-vintage-coin-400 p-12 flex flex-col justify-center text-white">
-                        <h3 className="text-3xl font-serif mb-6">Register Interest</h3>
-                        <p className="text-southern-sand-200 mb-8 leading-relaxed">
+            <Section className="py-12 md:py-24 bg-southern-sand-200" id="register">
+                <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-0 bg-white rounded-3xl overflow-hidden shadow-2xl border border-vintage-coin-400/10 mx-4 md:mx-auto">
+                    <div className="bg-vintage-coin-400 p-8 md:p-12 flex flex-col justify-center text-white">
+                        <h3 className="text-2xl md:text-3xl font-serif mb-4 md:mb-6">Register Interest</h3>
+                        <p className="text-southern-sand-200 mb-6 md:mb-8 leading-relaxed text-sm md:text-base">
                             Get VVIP access to showflat, floor plans, and early bird discounts. No commission payable.
                         </p>
-                        <ul className="space-y-4 text-sm text-southern-sand-200">
+                        <ul className="space-y-3 md:space-y-4 text-sm text-southern-sand-200">
                             <li className="flex gap-3">
                                 <span className="text-white">✓</span> Direct Developer Sales Team
                             </li>
@@ -151,7 +151,7 @@ export const LeadForm = () => {
                         </ul>
                     </div>
 
-                    <div className="p-12 bg-white flex flex-col items-center justify-center text-center">
+                    <div className="p-8 md:p-12 bg-white flex flex-col items-center justify-center text-center">
                         <div className="w-16 h-16 bg-vintage-coin-400/10 rounded-full flex items-center justify-center mb-6">
                             <span className="text-3xl text-vintage-coin-400">✓</span>
                         </div>
@@ -183,14 +183,14 @@ export const LeadForm = () => {
     }
 
     return (
-        <Section className="py-24 bg-southern-sand-200" id="register">
-            <div className="max-w-5xl mx-auto grid md:grid-cols-[2fr_3fr] gap-0 bg-white rounded-3xl overflow-hidden shadow-2xl border border-vintage-coin-400/10">
-                <div className="bg-vintage-coin-400 p-12 flex flex-col justify-center text-white">
-                    <h3 className="text-3xl font-serif mb-6">Register Interest</h3>
-                    <p className="text-southern-sand-200 mb-8 leading-relaxed">
+        <Section className="py-12 md:py-24 bg-southern-sand-200" id="register">
+            <div className="max-w-5xl grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-0 bg-white rounded-3xl overflow-hidden shadow-2xl border border-vintage-coin-400/10 mx-4 md:mx-auto">
+                <div className="bg-vintage-coin-400 p-8 md:p-12 flex flex-col justify-center text-white">
+                    <h3 className="text-2xl md:text-3xl font-serif mb-4 md:mb-6">Register Interest</h3>
+                    <p className="text-southern-sand-200 mb-6 md:mb-8 leading-relaxed text-sm md:text-base">
                         Get VVIP access to showflat, floor plans, and early bird discounts. No commission payable.
                     </p>
-                    <ul className="space-y-4 text-sm text-southern-sand-200">
+                    <ul className="space-y-3 md:space-y-4 text-sm text-southern-sand-200">
                         <li className="flex gap-3">
                             <span className="text-white">✓</span> Direct Developer Sales Team
                         </li>
@@ -203,10 +203,10 @@ export const LeadForm = () => {
                     </ul>
                 </div>
 
-                <div className="p-12 bg-white">
-                    <form className="space-y-5" onSubmit={handleSubmit} noValidate>
-                        {/* Name and Mobile Number - Side by Side */}
-                        <div className="grid grid-cols-2 gap-4">
+                <div className="p-6 md:p-12 bg-white">
+                    <form className="space-y-4 md:space-y-5" onSubmit={handleSubmit} noValidate>
+                        {/* Name and Mobile Number - Stacked on mobile, side by side on desktop */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-vintage-coin-400 mb-1 ml-4">Name</label>
                                 <input
@@ -260,8 +260,8 @@ export const LeadForm = () => {
                             )}
                         </div>
 
-                        {/* Preferred Unit and Request - Side by Side */}
-                        <div className="grid grid-cols-2 gap-4">
+                        {/* Preferred Unit and Request - Stacked on mobile, side by side on desktop */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-vintage-coin-400 mb-1 ml-4">Preferred Unit</label>
                                 <div className="relative">

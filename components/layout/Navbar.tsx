@@ -52,15 +52,19 @@ export const Navbar = () => {
 
     const scrollToRegister = (e: React.MouseEvent) => {
         e.preventDefault();
+        const wasMenuOpen = mobileMenuOpen;
         setMobileMenuOpen(false); // Close mobile menu if open
         
-        const registerSection = document.getElementById('register');
-        if (registerSection) {
-            registerSection.scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
+        // Delay scroll if menu was open to let it close first
+        setTimeout(() => {
+            const registerSection = document.getElementById('register');
+            if (registerSection) {
+                registerSection.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }, wasMenuOpen ? 300 : 0);
     };
 
     return (
