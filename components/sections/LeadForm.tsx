@@ -26,7 +26,7 @@ export const LeadForm = () => {
         name: '',
         mobile: '',
         email: '',
-        unit: '3-Bedroom',
+        unit: '2-Bedroom',
         request: '',
         consentContact: false,
         consentMarketing: false,
@@ -149,6 +149,11 @@ export const LeadForm = () => {
                                 <span className="text-white">✓</span> Latest Price List Updates
                             </li>
                         </ul>
+
+                        <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-southern-sand-200/20">
+                            <p className="text-xs uppercase tracking-widest text-southern-sand-200/60 mb-1">Target Preview</p>
+                            <p className="text-lg md:text-xl font-serif text-white font-semibold">20th February 2026</p>
+                        </div>
                     </div>
 
                     <div className="p-8 md:p-12 bg-white flex flex-col items-center justify-center text-center">
@@ -166,7 +171,7 @@ export const LeadForm = () => {
                                     name: '',
                                     mobile: '',
                                     email: '',
-                                    unit: '3-Bedroom',
+                                    unit: '2-Bedroom',
                                     request: '',
                                     consentContact: false,
                                     consentMarketing: false,
@@ -201,6 +206,11 @@ export const LeadForm = () => {
                             <span className="text-white">✓</span> Latest Price List Updates
                         </li>
                     </ul>
+
+                    <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-southern-sand-200/20">
+                        <p className="text-xs uppercase tracking-widest text-southern-sand-200/60 mb-1">Target Preview</p>
+                        <p className="text-lg md:text-xl font-serif text-white font-semibold">20th February 2026</p>
+                    </div>
                 </div>
 
                 <div className="p-6 md:p-12 bg-white">
@@ -270,10 +280,13 @@ export const LeadForm = () => {
                                         onChange={(e) => handleChange('unit', e.target.value)}
                                         className="w-full px-5 py-3 rounded-full border border-vintage-coin-400/20 focus:border-vintage-coin-400 focus:ring-4 focus:ring-vintage-coin-400/10 outline-none transition appearance-none bg-southern-sand-200/20 text-vintage-coin-400"
                                     >
+                                        <option className="bg-white">2-Bedroom</option>
+                                        <option className="bg-white">2-Bedroom Plus</option>
                                         <option className="bg-white">3-Bedroom</option>
+                                        <option className="bg-white">3-Bedroom Flex</option>
+                                        <option className="bg-white">3-Bedroom Plus</option>
                                         <option className="bg-white">4-Bedroom</option>
-                                        <option className="bg-white">5-Bedroom</option>
-                                        <option className="bg-white">Penthouse</option>
+                                        <option className="bg-white">4-Bedroom Plus</option>
                                     </select>
                                     <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-taupe-400">
                                         ▼
