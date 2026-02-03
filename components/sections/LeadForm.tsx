@@ -224,7 +224,7 @@ export const LeadForm = () => {
                                     value={formData.name}
                                     onChange={(e) => handleChange('name', e.target.value)}
                                     className={inputClass('name')}
-                                    placeholder="John Doe"
+                                    placeholder="Name"
                                 />
                                 {errors.name && (
                                     <p className="text-red-500 text-xs mt-1 ml-4">{errors.name}</p>
@@ -245,7 +245,7 @@ export const LeadForm = () => {
                                                 ? 'border-red-400 focus:border-red-400 focus:ring-4 focus:ring-red-400/10'
                                                 : 'border-vintage-coin-400/20 focus:border-vintage-coin-400 focus:ring-4 focus:ring-vintage-coin-400/10'
                                         }`}
-                                        placeholder="8123 4567"
+                                        placeholder="Mobile Number"
                                         aria-label="Mobile Number"
                                     />
                                 </div>
@@ -263,7 +263,7 @@ export const LeadForm = () => {
                                 value={formData.email}
                                 onChange={(e) => handleChange('email', e.target.value)}
                                 className={inputClass('email')}
-                                placeholder="john@example.com"
+                                placeholder="Email"
                             />
                             {errors.email && (
                                 <p className="text-red-500 text-xs mt-1 ml-4">{errors.email}</p>
