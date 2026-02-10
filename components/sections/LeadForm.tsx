@@ -146,7 +146,7 @@ export const LeadForm = () => {
                     <div className="bg-vintage-coin-400 p-8 md:p-12 flex flex-col justify-center text-white">
                         <h3 className="text-2xl md:text-3xl font-serif mb-4 md:mb-6">Register Interest</h3>
                         <p className="text-southern-sand-200 mb-6 md:mb-8 leading-relaxed text-sm md:text-base">
-                            Get VVIP access to showflat, floor plans, and early bird discounts. No commission payable.
+                            Be among the first to view. Register for direct updates on brochure release, preview slots, and choice unit selection.
                         </p>
                         <ul className="space-y-3 md:space-y-4 text-sm text-southern-sand-200">
                             <li className="flex gap-3">
