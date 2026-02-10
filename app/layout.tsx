@@ -4,6 +4,7 @@ import './globals.css'
 import { clsx } from 'clsx'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
+import { GoogleTagManager } from '@next/third-parties/google'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' })
@@ -23,6 +24,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className="scroll-smooth">
+            <GoogleTagManager gtmId="GTM-MQFBGKPW" />
             <body className={clsx(inter.variable, playfair.variable, "bg-slate-950 text-white min-h-screen")}>
                 <Navbar />
                 {children}

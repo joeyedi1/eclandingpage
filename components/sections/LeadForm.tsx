@@ -78,6 +78,8 @@ export const LeadForm = () => {
 
         setIsSubmitting(true);
 
+        const cleanMobile = formData.mobile.replace(/\s/g, '');
+
         try {
             const requestLabels: Record<string, string> = {
                 showflat: 'Arrange Showflat Viewing',
@@ -90,7 +92,7 @@ export const LeadForm = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     name: formData.name,
-                    mobile: `+65 ${formData.mobile}`,
+                    mobile: `+65 ${cleanMobile}`,
                     email: formData.email,
                     preferredUnit: formData.unit,
                     request: requestLabels[formData.request] || formData.request,
@@ -102,6 +104,15 @@ export const LeadForm = () => {
             const result = await response.json();
 
             if (result.success) {
+                if (typeof window !== 'undefined' && (window as any).dataLayer) {
+                    (window as any).dataLayer.push({
+                        event: 'generate_lead',
+                        user_data: {
+                            email: formData.email,
+                            phone_number: `+65${cleanMobile}`
+                        }
+                    });
+                }
                 setIsSubmitted(true);
             } else {
                 alert('Something went wrong. Please try again.');
@@ -122,10 +133,9 @@ export const LeadForm = () => {
     };
 
     const inputClass = (field: keyof FormErrors) =>
-        `w-full px-5 py-3 rounded-full border outline-none transition bg-southern-sand-200/20 text-vintage-coin-400 placeholder:text-taupe-400 ${
-            errors[field]
-                ? 'border-red-400 focus:border-red-400 focus:ring-4 focus:ring-red-400/10'
-                : 'border-vintage-coin-400/20 focus:border-vintage-coin-400 focus:ring-4 focus:ring-vintage-coin-400/10'
+        `w-full px-5 py-3 rounded-full border outline-none transition bg-southern-sand-200/20 text-vintage-coin-400 placeholder:text-taupe-400 ${errors[field]
+            ? 'border-red-400 focus:border-red-400 focus:ring-4 focus:ring-red-400/10'
+            : 'border-vintage-coin-400/20 focus:border-vintage-coin-400 focus:ring-4 focus:ring-vintage-coin-400/10'
         }`;
 
     // Success State
@@ -233,18 +243,16 @@ export const LeadForm = () => {
                             <div>
                                 <label className="block text-sm font-medium text-vintage-coin-400 mb-1 ml-4">Mobile Number</label>
                                 <div className="flex">
-                                    <span className={`bg-southern-sand-200/40 px-4 py-3 rounded-l-full border border-r-0 text-vintage-coin-400 font-medium pl-5 ${
-                                        errors.mobile ? 'border-red-400' : 'border-vintage-coin-400/20'
-                                    }`}>+65</span>
+                                    <span className={`bg-southern-sand-200/40 px-4 py-3 rounded-l-full border border-r-0 text-vintage-coin-400 font-medium pl-5 ${errors.mobile ? 'border-red-400' : 'border-vintage-coin-400/20'
+                                        }`}>+65</span>
                                     <input
                                         type="tel"
                                         value={formData.mobile}
                                         onChange={(e) => handleChange('mobile', e.target.value)}
-                                        className={`w-full px-5 py-3 rounded-r-full border outline-none transition bg-southern-sand-200/20 text-vintage-coin-400 placeholder:text-taupe-400 ${
-                                            errors.mobile
-                                                ? 'border-red-400 focus:border-red-400 focus:ring-4 focus:ring-red-400/10'
-                                                : 'border-vintage-coin-400/20 focus:border-vintage-coin-400 focus:ring-4 focus:ring-vintage-coin-400/10'
-                                        }`}
+                                        className={`w-full px-5 py-3 rounded-r-full border outline-none transition bg-southern-sand-200/20 text-vintage-coin-400 placeholder:text-taupe-400 ${errors.mobile
+                                            ? 'border-red-400 focus:border-red-400 focus:ring-4 focus:ring-red-400/10'
+                                            : 'border-vintage-coin-400/20 focus:border-vintage-coin-400 focus:ring-4 focus:ring-vintage-coin-400/10'
+                                            }`}
                                         placeholder="Mobile Number"
                                         aria-label="Mobile Number"
                                     />
@@ -299,11 +307,10 @@ export const LeadForm = () => {
                                     <select
                                         value={formData.request}
                                         onChange={(e) => handleChange('request', e.target.value)}
-                                        className={`w-full px-5 py-3 rounded-full border outline-none transition appearance-none bg-southern-sand-200/20 text-vintage-coin-400 ${
-                                            errors.request
-                                                ? 'border-red-400 focus:border-red-400 focus:ring-4 focus:ring-red-400/10'
-                                                : 'border-vintage-coin-400/20 focus:border-vintage-coin-400 focus:ring-4 focus:ring-vintage-coin-400/10'
-                                        }`}
+                                        className={`w-full px-5 py-3 rounded-full border outline-none transition appearance-none bg-southern-sand-200/20 text-vintage-coin-400 ${errors.request
+                                            ? 'border-red-400 focus:border-red-400 focus:ring-4 focus:ring-red-400/10'
+                                            : 'border-vintage-coin-400/20 focus:border-vintage-coin-400 focus:ring-4 focus:ring-vintage-coin-400/10'
+                                            }`}
                                     >
                                         <option className="bg-white" value="">Select Request</option>
                                         <option className="bg-white" value="showflat">Showflat Viewing</option>
@@ -323,22 +330,20 @@ export const LeadForm = () => {
                         {/* Consent Checkboxes */}
                         <div className="space-y-3 pt-2">
                             <label className="flex items-start gap-3 cursor-pointer">
-                                <input 
+                                <input
                                     type="checkbox"
                                     checked={formData.consentContact}
                                     onChange={(e) => handleChange('consentContact', e.target.checked)}
-                                    className={`mt-1 w-4 h-4 rounded text-vintage-coin-400 focus:ring-vintage-coin-400/20 ${
-                                        errors.consentContact ? 'border-red-400' : 'border-vintage-coin-400/30'
-                                    }`}
+                                    className={`mt-1 w-4 h-4 rounded text-vintage-coin-400 focus:ring-vintage-coin-400/20 ${errors.consentContact ? 'border-red-400' : 'border-vintage-coin-400/30'
+                                        }`}
                                 />
-                                <span className={`text-xs leading-relaxed ${
-                                    errors.consentContact ? 'text-red-500' : 'text-vintage-coin-400/70'
-                                }`}>
+                                <span className={`text-xs leading-relaxed ${errors.consentContact ? 'text-red-500' : 'text-vintage-coin-400/70'
+                                    }`}>
                                     I agree to be contacted by River Modern sales team and associates.
                                 </span>
                             </label>
                             <label className="flex items-start gap-3 cursor-pointer">
-                                <input 
+                                <input
                                     type="checkbox"
                                     checked={formData.consentMarketing}
                                     onChange={(e) => handleChange('consentMarketing', e.target.checked)}
@@ -350,12 +355,11 @@ export const LeadForm = () => {
                             </label>
                         </div>
 
-                        <Button 
+                        <Button
                             type="submit"
                             disabled={isSubmitting}
-                            className={`w-full bg-vintage-coin-400 hover:bg-taupe-400 text-white shadow-lg mt-2 font-bold text-lg transition-opacity ${
-                                isSubmitting ? 'opacity-70 cursor-not-allowed' : ''
-                            }`}
+                            className={`w-full bg-vintage-coin-400 hover:bg-taupe-400 text-white shadow-lg mt-2 font-bold text-lg transition-opacity ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''
+                                }`}
                         >
                             {isSubmitting ? 'Submitting...' : 'Register Now'}
                         </Button>
