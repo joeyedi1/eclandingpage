@@ -11,7 +11,6 @@ export const Footer = () => {
 
                 <div className="flex flex-col items-center md:items-end gap-2 text-xs text-southern-sand-200/60">
                     <p>&copy; {new Date().getFullYear()} RIVER MODERN Official.</p>
-                    <p>CEA License: L3008020J | Agent: R0123456Z</p>
                     <p className="text-southern-sand-200/80">Prices and availability subject to change without notice.</p>
                 </div>
             </div>

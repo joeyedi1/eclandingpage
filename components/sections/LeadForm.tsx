@@ -289,12 +289,8 @@ export const LeadForm = () => {
                                         className="w-full px-5 py-3 rounded-full border border-vintage-coin-400/20 focus:border-vintage-coin-400 focus:ring-4 focus:ring-vintage-coin-400/10 outline-none transition appearance-none bg-southern-sand-200/20 text-vintage-coin-400"
                                     >
                                         <option className="bg-white">2-Bedroom</option>
-                                        <option className="bg-white">2-Bedroom Plus</option>
                                         <option className="bg-white">3-Bedroom</option>
-                                        <option className="bg-white">3-Bedroom Flex</option>
-                                        <option className="bg-white">3-Bedroom Plus</option>
                                         <option className="bg-white">4-Bedroom</option>
-                                        <option className="bg-white">4-Bedroom Plus</option>
                                     </select>
                                     <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-taupe-400">
                                         ▼

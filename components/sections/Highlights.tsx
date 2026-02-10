@@ -32,13 +32,18 @@ export const Highlights = () => {
                                 <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-southern-sand-200/10 border border-southern-sand-200/20 flex items-center justify-center">
                                     <Icon className="w-5 h-5 md:w-6 md:h-6 text-southern-sand-200" />
                                 </div>
-                                <div>
+                                <div className="flex flex-col items-center">
                                     <p className="text-southern-sand-200 font-serif font-semibold text-sm md:text-base leading-tight">
                                         {item.title}
                                     </p>
-                                    <p className="text-southern-sand-200/60 text-xs md:text-sm mt-1">
-                                        {item.subtitle}
-                                    </p>
+                                    <div className="flex items-center gap-1.5 mt-1">
+                                        <p className="text-southern-sand-200/60 text-xs md:text-sm">
+                                            {item.subtitle}
+                                        </p>
+                                        {item.title === "Great World MRT" && (
+                                            <img src="/mrt-great-world.png" alt="TE15" className="h-3.5" />
+                                        )}
+                                    </div>
                                 </div>
                             </motion.div>
                         );

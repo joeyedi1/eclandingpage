@@ -17,11 +17,6 @@ export const PROJECT_INFO = {
 
 export const HIGHLIGHTS = [
     {
-        icon: "Train",
-        title: "Great World MRT",
-        subtitle: "Integrated to TEL",
-    },
-    {
         icon: "Waves",
         title: "Waterfront Living",
         subtitle: "Unblocked River Views",
@@ -30,6 +25,11 @@ export const HIGHLIGHTS = [
         icon: "GraduationCap",
         title: "River Valley Primary",
         subtitle: "At Your Doorstep",
+    },
+    {
+        icon: "Train",
+        title: "Great World MRT",
+        subtitle: "Integrated to TEL",
     },
     {
         icon: "ShoppingBag",
@@ -76,8 +76,8 @@ export const IMAGES = {
 export const NAV_LINKS = [
     { name: "Project Info", href: "#project-info" },
     { name: "Location", href: "#location" },
-    { name: "Floor Plans", href: "#register" },
     { name: "Price List", href: "#prices" },
+    { name: "Floor Plans", href: "#register" },
 ]
 
 // Keep legacy exports for any components that still reference them

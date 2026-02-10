@@ -31,7 +31,7 @@ const LOAN_TO_VALUE_RATIO = 0.75;
 // ============================================
 // MORTGAGE CALCULATION HELPER
 // ============================================
-function calculateMonthlyPayment(principal: number, annualRate: number = 3.5, years: number = 30): number {
+function calculateMonthlyPayment(principal: number, annualRate: number = 4.85, years: number = 30): number {
     if (principal <= 0) return 0;
     const monthlyRate = annualRate / 100 / 12;
     const numberOfPayments = years * 12;
