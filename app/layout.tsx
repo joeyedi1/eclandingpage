@@ -10,8 +10,8 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' })
 
 export const metadata: Metadata = {
-    title: 'Luxury Executive Condominium | Singapore',
-    description: 'Experience the pinnacle of luxury living in Singapore\'s newest EC launch.',
+    title: 'River Modern by GuocoLand',
+    description: 'Experience the pinnacle of luxury living in Singapore\'s newest condominium launch.',
     icons: {
         icon: '/favicon.png',
     },
