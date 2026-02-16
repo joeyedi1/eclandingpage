@@ -13,12 +13,13 @@ export async function POST(req: NextRequest) {
         const timestamp = new Date().toLocaleString('en-SG', { timeZone: 'Asia/Singapore' });
 
         // ======================================================================
-        // PREPARE REQUESTS (Define them but don't await them yet)
+        // PREPARE PARALLEL TASKS
         // ======================================================================
-
         const tasks = [];
 
-        // --- TASK A: TELEGRAM NOTIFICATION ---
+        // ----------------------------------------------------------------------
+        // TASK A: TELEGRAM BOT (With Logs)
+        // ----------------------------------------------------------------------
         const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
         const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
@@ -37,30 +38,34 @@ export async function POST(req: NextRequest) {
 🕐 <b>Time:</b> ${timestamp}
             `.trim();
 
-            const telegramRequest = fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: CHAT_ID,
-                    text: telegramMessage,
-                    parse_mode: 'HTML'
-                }),
-            }).then(async (res) => {
-                const data = await res.json();
-                if (!res.ok) console.error("❌ Telegram Failed:", data);
-                else console.log("✅ Telegram Sent");
-            });
-
-            tasks.push(telegramRequest);
-        } else {
-            console.error("⚠️ Telegram keys missing");
+            const telegramTask = async () => {
+                try {
+                    const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            chat_id: CHAT_ID,
+                            text: telegramMessage,
+                            parse_mode: 'HTML'
+                        }),
+                    });
+                    const result = await response.json();
+                    if (!response.ok) console.error("❌ TELEGRAM FAILED:", result);
+                    else console.log("✅ TELEGRAM SENT:", result);
+                } catch (e) {
+                    console.error("❌ TELEGRAM ERROR:", e);
+                }
+            };
+            tasks.push(telegramTask());
         }
 
-        // --- TASK B: TWILIO WHATSAPP NOTIFICATION ---
+        // ----------------------------------------------------------------------
+        // TASK B: TWILIO WHATSAPP (With Logs)
+        // ----------------------------------------------------------------------
         const ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
         const AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
-        const FROM_NUMBER = process.env.TWILIO_WHATSAPP_FROM; // e.g., 'whatsapp:+14155238886'
-        const TO_NUMBER = process.env.YOUR_WHATSAPP_NUMBER;   // e.g., 'whatsapp:+6591234567'
+        const FROM_NUMBER = process.env.TWILIO_WHATSAPP_FROM;
+        const TO_NUMBER = process.env.YOUR_WHATSAPP_NUMBER;
 
         if (ACCOUNT_SID && AUTH_TOKEN && FROM_NUMBER && TO_NUMBER) {
             const whatsappMessage = `
@@ -77,35 +82,44 @@ export async function POST(req: NextRequest) {
 🕐 *Time:* ${timestamp}
             `.trim();
 
-            const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${ACCOUNT_SID}/Messages.json`;
+            const twilioTask = async () => {
+                try {
+                    const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${ACCOUNT_SID}/Messages.json`;
+                    const response = await fetch(twilioUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Basic ' + Buffer.from(`${ACCOUNT_SID}:${AUTH_TOKEN}`).toString('base64'),
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            From: FROM_NUMBER,
+                            To: TO_NUMBER,
+                            Body: whatsappMessage,
+                        }),
+                    });
 
-            const twilioRequest = fetch(twilioUrl, {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Basic ' + Buffer.from(`${ACCOUNT_SID}:${AUTH_TOKEN}`).toString('base64'),
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    From: FROM_NUMBER,
-                    To: TO_NUMBER,
-                    Body: whatsappMessage,
-                }),
-            }).then(async (res) => {
-                const data = await res.json();
-                if (!res.ok) console.error("❌ Twilio Failed:", data);
-                else console.log("✅ Twilio Sent");
-            });
-
-            tasks.push(twilioRequest);
+                    // ★★★ THIS IS THE DEBUGGING PART ★★★
+                    const result = await response.json();
+                    
+                    if (!response.ok) {
+                        // Log the specific error code from Twilio (e.g., 21211, 63001)
+                        console.error("❌ TWILIO FAILED:", result); 
+                    } else {
+                        // Log the Success SID
+                        console.log("✅ TWILIO SENT (SID):", result.sid);
+                    }
+                } catch (e) {
+                    console.error("❌ TWILIO ERROR:", e);
+                }
+            };
+            tasks.push(twilioTask());
         } else {
-            console.error("⚠️ Twilio keys missing");
+            console.error("⚠️ TWILIO KEYS MISSING: Check Vercel Variables");
         }
 
         // ======================================================================
-        // EXECUTE ALL (Parallel)
+        // EXECUTE BOTH
         // ======================================================================
-        
-        // This waits for both to finish (successfully or with failure)
         await Promise.allSettled(tasks);
 
         return NextResponse.json({ success: true, message: 'Submitted successfully' });
