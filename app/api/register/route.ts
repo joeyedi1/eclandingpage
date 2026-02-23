@@ -115,43 +115,53 @@ export async function POST(req: NextRequest) {
         }
 
         // ----------------------------------------------------------------------
-        // TASK C: CALLMEBOT WHATSAPP (With Logs)
+        // TASK C: CALLMEBOT WHATSAPP (Strictly Compliant)
         // ----------------------------------------------------------------------
-        const CMB_PHONE = process.env.CALLMEBOT_PHONE;
-        const CMB_API_KEY = process.env.CALLMEBOT_API_KEY;
+        const CMB_PHONE = process.env.CALLMEBOT_PHONE || '';
+        const CMB_API_KEY = process.env.CALLMEBOT_API_KEY || '';
 
         if (CMB_PHONE && CMB_API_KEY) {
+            // Simplified, API-safe message without unicode drawing lines
             const cmbMessage = `
-🏠 *New Lead: River Modern*
+*NEW LEAD: RIVER MODERN*
 
-👤 *Name:* ${name}
-📱 *Mobile:* ${mobile}
-📧 *Email:* ${email}
-🏢 *Unit:* ${preferredUnit}
-📋 *Request:* ${request}
-✅ *Contact:* ${consentContact ? 'Yes' : 'No'}
-📣 *Marketing:* ${consentMarketing ? 'Yes' : 'No'}
+*Name:* ${name}
+*Mobile:* ${mobile}
+*Email:* ${email}
+*Unit:* ${preferredUnit}
+*Request:* ${request}
 
-🕐 *Time:* ${timestamp}
+*Contact Consent:* ${consentContact ? 'Yes' : 'No'}
+*Marketing Consent:* ${consentMarketing ? 'Yes' : 'No'}
+*Time:* ${timestamp}
             `.trim();
 
             const callMeBotTask = async () => {
                 try {
-                    // CallMeBot requires URL-encoded text
+                    // 1. Strictly URL-encode the text payload
                     const encodedMessage = encodeURIComponent(cmbMessage);
-                    const cmbUrl = `https://api.callmebot.com/whatsapp.php?phone=${CMB_PHONE}&text=${encodedMessage}&apikey=${CMB_API_KEY}`;
                     
+                    // 2. Safely encode the phone number (turns '+' into '%2B')
+                    const safePhone = encodeURIComponent(CMB_PHONE.trim());
+                    const safeApiKey = encodeURIComponent(CMB_API_KEY.trim());
+
+                    // 3. Construct the exact URL specified by the documentation
+                    const cmbUrl = `https://api.callmebot.com/whatsapp.php?phone=${safePhone}&text=${encodedMessage}&apikey=${safeApiKey}`;
+                    
+                    console.log("🚨 DEBUG URL:", cmbUrl);
+
+                    // 4. Fire the GET request (bypassing Next.js cache)
                     const response = await fetch(cmbUrl, {
-                        method: 'GET', // CallMeBot uses GET
+                        method: 'GET',
+                        cache: 'no-store',
                     });
 
-                    // CallMeBot usually returns plain HTML/text, not JSON
                     const resultText = await response.text();
                     
                     if (!response.ok || resultText.toLowerCase().includes('error')) {
                         console.error("❌ CALLMEBOT FAILED:", resultText); 
                     } else {
-                        console.log("✅ CALLMEBOT SENT");
+                        console.log("✅ CALLMEBOT SENT:", { status: resultText.trim() });
                     }
                 } catch (e) {
                     console.error("❌ CALLMEBOT ERROR:", e);
